@@ -1,4 +1,12 @@
+window.onload = function () {
+  document.addEventListener("keydown", keyDownHandler, false);
 
+}
+function keyDownHandler(e) {
+  if(e.key == "Space")  {
+      pause_resume();
+  }}
+  
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 
@@ -122,11 +130,28 @@ function step(newState) {
   state = nextState;
 } 
 function tick(){
+  if(!paused){
   step(state);
+  }
 }
-var nIntervId = setInterval(tick, 100)
+
+
+var nIntervId = setInterval(tick, 100);
+var paused = false;
 let steps = 0;
 var state = rpent;
+
+document.addEventListener("keydown", keyDownHandler,false);
+function keyDownHandler(e) {
+  console.log(e.key)
+  if(e.key == "p" || e.key == " ")  {
+      pause_resume();
+  }
+}
+
+function pause_resume() {
+  paused = !paused;
+}
 
 //drawCells(rpent)
 for(let i = 0; i < 0; i++) {
@@ -135,17 +160,8 @@ for(let i = 0; i < 0; i++) {
   
   console.log("step:",steps,":",state.length)
 }
-//for(let i = 0; i < 10; i++) {
-//let next = step(startState)
-//console.log("start",startState,"next",next)
-//console.log("next Length",next.length)
 
-//get start state
-//get eligible squares
-//run an update
-//push state to a history?
 
-//console.log(getEligible([[2, 2],[2,3]])); 
-//console.log("Neightbor count:",getNeighbors([0,0],startState));
-//console.log("fish in barrel",match([0,0],[[0,0]]))
-//console.log("strict",[0,0]===[0,0]);
+const btn = document.getElementById('pause');
+    btn.onclick = pause_resume
+
