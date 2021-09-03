@@ -7,12 +7,14 @@ CURRENT FEATURES:
 - Basically nothing else (this is a Minimum Viable Product)
 
 TODO:
-- Allow for panning and zooming the canvas window using keyboard 
+
 - Time controls:
     - Pausing and resuming
     - Incrementing backwards/forwards by a step (when paused)
     - reverse speed?
     - Skip to beginning/last generated state
+- Allow for panning and zooming the canvas window using keyboard 
+- Important - Bundle functionality into an object!!
 - Data visualisation:
     - Tracking numbers of "alive" cells#
 - Modular Rules

@@ -3,28 +3,26 @@ window.onload = function () {
 
 }
 function keyDownHandler(e) {
-  if(e.key == "Space")  {
-      pause_resume();
-  }}
-  
+  if (e.key == "Space") {
+    pause_resume();
+  }
+}
+
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 
 const width = (canvas.width = 480);//window.innerWidth
 const height = (canvas.height = 480);
 const pixel_size = 10;
-const chunks = 480/pixel_size;
+const chunks = 480 / pixel_size;
 const xOffset = 240;
 const yOffset = 240;
 
 
-function random(min, max) {
-  const num = Math.floor(Math.random() * (max - min + 1)) + min;
-  return num;
-}
-function match(element,list) {
+
+function match(element, list) {
   for (let i = 0; i < list.length; i++) {
-    if(element[0] == list[i][0] 
+    if (element[0] == list[i][0]
       && element[1] == list[i][1]
       && element.length == list[i].length) {
       return true
@@ -33,9 +31,8 @@ function match(element,list) {
   return false
 }
 
-
 function getNeighbors(coord, list) {
-  let x= coord[0];
+  let x = coord[0];
   let y = coord[1];
   let neighborList = [
     [x - 1, y - 1],
@@ -52,8 +49,8 @@ function getNeighbors(coord, list) {
   let count = 0;
   for (let i = 0; i < neighborList.length; i++) {
     //
-    if (match(neighborList[i],list)) {
-      
+    if (match(neighborList[i], list)) {
+
       count += 1;
     }
   }
@@ -70,7 +67,7 @@ function getEligible(list) {
         let coord = [...list[i]];
         coord[0] += x;
         coord[1] += y;
-        if (!(match(coord,checkList))) {
+        if (!(match(coord, checkList))) {
           checkList.push(coord);
         }
       }
@@ -84,54 +81,74 @@ function drawCells(liveList) {
   //ctx.clearRect(0,0,0,0)
   ctx.fillStyle = "rgba(50, 50, 50, 1)";
   ctx.fillRect(0, 0, width, height);
-  for(let i = 0; i < liveList.length; i++) {
-    
+  for (let i = 0; i < liveList.length; i++) {
+
     ctx.beginPath();
-    ctx.rect(liveList[i][0]*pixel_size +xOffset, liveList[i][1]*pixel_size +yOffset, pixel_size-1, pixel_size-1);
+    ctx.rect(liveList[i][0] * pixel_size + xOffset, liveList[i][1] * pixel_size + yOffset, pixel_size - 1, pixel_size - 1);
     ctx.fillStyle = "#EEEEEE";
     ctx.fill();
     ctx.closePath();
   }
 }
 
-function update(eligibleList,liveList) {
+function update(eligibleList, liveList) {
   let newLiveList = [];
-  for(let i = 0; i < eligibleList.length; i++) {
+  for (let i = 0; i < eligibleList.length; i++) {
     let current = eligibleList[i];
-    let count = getNeighbors(current,liveList);
+    let count = getNeighbors(current, liveList);
     //console.log(current,":",count);
-    if(!(match(current,liveList))) { //not currently live
-      if(count == 3) { //becomes live only with three neighbors
+    if (!(match(current, liveList))) { //not currently live
+      if (count == 3) { //becomes live only with three neighbors
         newLiveList.push(current);
       }
     } else {
-      if(count == 2 || count == 3) { //needs 2 or three neighbors to survive
+      if (count == 2 || count == 3) { //needs 2 or three neighbors to survive
         newLiveList.push(current);
       }
     }
-    
+
   }
   return newLiveList;
 }
 
-let startState = [[0,0],[0,1],[1,0],[1,1],[0,2]]
-let diehard = [[0,1],[1,1],[1,0],[5,0],[6,0],[7,0],[6,2],]
-let rpent = [[0,1],[1,0],[1,1],[1,2],[2,2]]
-//basic loop:
+function goTo() {
+  turnNumber = document.getElementById('turnNumber').value;
+  point = turnNumber
+  if(point < history.length && point >= 0){
+    pointer = point
+    drawCells(history[pointer])
+  } else {
+    alert("Illegal jump attempted!")
+  }
+}
+
+
+var pointer = 0;
+
+let startState = [[0, 0], [0, 1], [1, 0], [1, 1], [0, 2]]
+let diehard = [[0, 1], [1, 1], [1, 0], [5, 0], [6, 0], [7, 0], [6, 2],]
+let rpent = [[0, 1], [1, 0], [1, 1], [1, 2], [2, 2]]
+
 function step(newState) {
   let currentState = newState;
   drawCells(currentState)
   //console.log(currentState)
   let eligibleList = getEligible(currentState);
   //console.log("eligibe List: ",eligibleList)
-  let nextState = update(eligibleList,currentState);
+  let nextState = update(eligibleList, currentState);
   //console.log("Next state: ",nextState)
-  
+
   state = nextState;
-} 
-function tick(){
-  if(!paused){
-  step(state);
+  history.push(state)
+}
+function tick() {
+  if (!paused) {
+    if(pointer < history.length - 1) {
+      drawCells(history[pointer])
+    }else {
+    step(state);
+    }
+    pointer ++;
   }
 }
 
@@ -140,12 +157,15 @@ var nIntervId = setInterval(tick, 100);
 var paused = false;
 let steps = 0;
 var state = rpent;
+let history = [];
+history.push(state);
 
-document.addEventListener("keydown", keyDownHandler,false);
+
+document.addEventListener("keydown", keyDownHandler, false);
 function keyDownHandler(e) {
-  console.log(e.key)
-  if(e.key == "p" || e.key == " ")  {
-      pause_resume();
+  //console.log(e.key)
+  if (e.key == "p" || e.key == " ") {
+    pause_resume();
   }
 }
 
@@ -154,14 +174,16 @@ function pause_resume() {
 }
 
 //drawCells(rpent)
-for(let i = 0; i < 0; i++) {
+for (let i = 0; i < 0; i++) {
   state = step(state);
-  steps ++;
-  
-  console.log("step:",steps,":",state.length)
+  steps++;
+
+  console.log("step:", steps, ":", state.length)
 }
 
 
 const btn = document.getElementById('pause');
-    btn.onclick = pause_resume
-
+btn.onclick = pause_resume
+const gotoButton = document.getElementById('goto');
+let turnNumber = document.getElementById('turnNumber').value;
+gotoButton.onclick = goTo
