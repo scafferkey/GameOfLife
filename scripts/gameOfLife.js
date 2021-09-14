@@ -154,26 +154,54 @@ function tick() {
 }
 
 
-var nIntervId = setInterval(tick, 100);
-var paused = true;
+//let nIntervId = setInterval(tick, 100);
+let interval = 1000
+let speed = 10;
+let minSpeed = 1;
+let maxSpeed = 30;
+let paused = true;
 let steps = 0;
-var state = rpent;
+let state = rpent;
 let history = [];
 history.push(state);
 drawCells(state);
 
 document.addEventListener("keydown", keyDownHandler, false);
-function keyDownHandler(e) {
-  //console.log(e.key)
-  if (e.key == "p" || e.key == " ") {
-    pause_resume();
-  } else if (e.key == ","){
-    paused = true;
-    goTo(pointer-1)
-  }else if (e.key == "."){
-    paused = true;
-    goTo(pointer+1)
+
+timer()
+function timer(){
+
+  tick();
+  setTimeout(timer,interval/speed);
 }
+
+function keyDownHandler(e) {
+  console.log(e.key)
+  //console.log(e.key.toString())
+  switch(e.key){
+    case "p":
+    case " ":
+      pause_resume()
+      break;
+    case ",":
+      paused = true;
+      goTo(pointer-1)
+      break;
+    case ".":
+      paused = true;
+      goTo(pointer+1)
+      break;
+    case "ArrowRight":
+      speed = speed >= maxSpeed ? maxSpeed : speed + 1;
+      console.log("speed:",speed)
+      break;
+    case "ArrowLeft":
+      speed = speed <= minSpeed ? minSpeed : speed - 1;
+      console.log("speed:",speed)
+      break;
+    
+  }
+  
 }
 
 function pause_resume() {
@@ -181,12 +209,7 @@ function pause_resume() {
 }
 
 //drawCells(rpent)
-for (let i = 0; i < 0; i++) {
-  state = step(state);
-  steps++;
 
-  console.log("step:", steps, ":", state.length)
-}
 
 
 const btn = document.getElementById('pause');

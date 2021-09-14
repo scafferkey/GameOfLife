@@ -16,7 +16,7 @@ TODO:
 - Allow for panning and zooming the canvas window using keyboard 
 - Important - Bundle functionality into an object!!
 - Data visualisation:
-    - Tracking numbers of "alive" cells#
+    - Tracking numbers of "alive" cells
 - Modular Rules
 - Saving/Exporting Game states
 - Library of interesting configurations
