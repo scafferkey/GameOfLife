@@ -168,7 +168,6 @@ let history = [];
 history.push(state);
 drawCells(state);
 
-document.addEventListener("keydown", keyDownHandler, false);
 
 timer()
 function timer(){
