@@ -2,11 +2,8 @@ window.onload = function () {
   document.addEventListener("keydown", keyDownHandler, false);
 
 }
-function keyDownHandler(e) {
-  if (e.key == "Space") {
-    pause_resume();
-  }
-}
+
+
 
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
@@ -111,19 +108,22 @@ function update(eligibleList, liveList) {
   return newLiveList;
 }
 
-function goTo() {
-  turnNumber = document.getElementById('turnNumber').value;
+function goTo(turnNumber) {
+  //turnNumber = document.getElementById('turnNumber').value;
   point = turnNumber
   if(point < history.length && point >= 0){
     pointer = point
     drawCells(history[pointer])
+  }else if(point >= history.length){
+    step(state);
+    pointer ++;
   } else {
-    alert("Illegal jump attempted!")
+    //alert("Illegal jump attempted! \nPointer:",point)
   }
 }
 
 
-var pointer = 0;
+let pointer = 0;
 
 let startState = [[0, 0], [0, 1], [1, 0], [1, 1], [0, 2]]
 let diehard = [[0, 1], [1, 1], [1, 0], [5, 0], [6, 0], [7, 0], [6, 2],]
@@ -149,24 +149,31 @@ function tick() {
     step(state);
     }
     pointer ++;
+    //console.log(pointer)
   }
 }
 
 
 var nIntervId = setInterval(tick, 100);
-var paused = false;
+var paused = true;
 let steps = 0;
 var state = rpent;
 let history = [];
 history.push(state);
-
+drawCells(state);
 
 document.addEventListener("keydown", keyDownHandler, false);
 function keyDownHandler(e) {
   //console.log(e.key)
   if (e.key == "p" || e.key == " ") {
     pause_resume();
-  }
+  } else if (e.key == ","){
+    paused = true;
+    goTo(pointer-1)
+  }else if (e.key == "."){
+    paused = true;
+    goTo(pointer+1)
+}
 }
 
 function pause_resume() {
