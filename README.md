@@ -13,6 +13,7 @@ TODO:
     - Incrementing backwards/forwards by a step (when paused)
     - reverse speed?
     - Skip to beginning/last generated state
+    - Fix counters so they update.
 - Allow for panning and zooming the canvas window using keyboard 
 - Important - Bundle functionality into an object!!
 - Data visualisation:

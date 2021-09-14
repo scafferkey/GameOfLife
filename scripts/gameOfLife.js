@@ -120,6 +120,7 @@ function goTo(turnNumber) {
   } else {
     //alert("Illegal jump attempted! \nPointer:",point)
   }
+  updateCounters()
 }
 
 
@@ -150,6 +151,7 @@ function tick() {
     }
     pointer ++;
     //console.log(pointer)
+    updateCounters();
   }
 }
 
@@ -161,7 +163,7 @@ let minSpeed = 1;
 let maxSpeed = 30;
 let paused = true;
 let steps = 0;
-let state = rpent;
+let state = diehard;
 let history = [];
 history.push(state);
 drawCells(state);
@@ -208,10 +210,14 @@ function pause_resume() {
   paused = !paused;
 }
 
+function updateCounters(){
+  turnCounter.textContent = pointer;
+  turnsGenerated.textContent = history.length -1;
+}
 //drawCells(rpent)
 
-
-
+const turnsGenerated = document.getElementById('turnsGenerated')
+const turnCounter = document.getElementById('pointer')
 const btn = document.getElementById('pause');
 btn.onclick = pause_resume
 const gotoButton = document.getElementById('goto');
