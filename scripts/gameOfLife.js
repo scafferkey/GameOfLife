@@ -7,7 +7,6 @@ window.onload = function () {
 
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
-
 const width = (canvas.width = 480);//window.innerWidth
 const height = (canvas.height = 480);
 const pixel_size = 10;
@@ -15,6 +14,58 @@ const chunks = 480 / pixel_size;
 const xOffset = 240;
 const yOffset = 240;
 
+
+let pointer = 0;
+let startState = [[0, 0], [0, 1], [1, 0], [1, 1], [0, 2]]
+let diehard = [[0, 1], [1, 1], [1, 0], [5, 0], [6, 0], [7, 0], [6, 2],]
+let rpent = [[0, 1], [1, 0], [1, 1], [1, 2], [2, 2]]
+
+//let nIntervId = setInterval(tick, 100);
+let interval = 1000
+let speed = 10;
+let minSpeed = 1;
+let maxSpeed = 30;
+let paused = true;
+let steps = 0;
+let state = rpent;
+let history = [];
+history.push(state);
+drawCells(state);
+timer()
+
+const turnsGenerated = document.getElementById('turnsGenerated')
+const turnCounter = document.getElementById('pointer')
+const btn = document.getElementById('pause');
+btn.onclick = pause_resume
+const gotoButton = document.getElementById('goto');
+let turnNumber = document.getElementById('turnNumber').value;
+gotoButton.onclick = goTo
+
+function step(newState) {
+  let currentState = newState;
+  drawCells(currentState)
+  //console.log(currentState)
+  let eligibleList = getEligible(currentState);
+  //console.log("eligibe List: ",eligibleList)
+  let nextState = update(eligibleList, currentState);
+  //console.log("Next state: ",nextState)
+
+  state = nextState;
+  history.push(state)
+}
+
+function tick() {
+  if (!paused) {
+    if(pointer < history.length - 1) {
+      drawCells(history[pointer])
+    }else {
+    step(state);
+    }
+    pointer ++;
+    //console.log(pointer)
+    updateCounters();
+  }
+}
 
 
 function match(element, list) {
@@ -122,54 +173,6 @@ function goTo(turnNumber) {
   }
   updateCounters()
 }
-
-
-let pointer = 0;
-
-let startState = [[0, 0], [0, 1], [1, 0], [1, 1], [0, 2]]
-let diehard = [[0, 1], [1, 1], [1, 0], [5, 0], [6, 0], [7, 0], [6, 2],]
-let rpent = [[0, 1], [1, 0], [1, 1], [1, 2], [2, 2]]
-
-function step(newState) {
-  let currentState = newState;
-  drawCells(currentState)
-  //console.log(currentState)
-  let eligibleList = getEligible(currentState);
-  //console.log("eligibe List: ",eligibleList)
-  let nextState = update(eligibleList, currentState);
-  //console.log("Next state: ",nextState)
-
-  state = nextState;
-  history.push(state)
-}
-function tick() {
-  if (!paused) {
-    if(pointer < history.length - 1) {
-      drawCells(history[pointer])
-    }else {
-    step(state);
-    }
-    pointer ++;
-    //console.log(pointer)
-    updateCounters();
-  }
-}
-
-
-//let nIntervId = setInterval(tick, 100);
-let interval = 1000
-let speed = 10;
-let minSpeed = 1;
-let maxSpeed = 30;
-let paused = true;
-let steps = 0;
-let state = diehard;
-let history = [];
-history.push(state);
-drawCells(state);
-
-
-timer()
 function timer(){
 
   tick();
@@ -213,12 +216,3 @@ function updateCounters(){
   turnCounter.textContent = pointer;
   turnsGenerated.textContent = history.length -1;
 }
-//drawCells(rpent)
-
-const turnsGenerated = document.getElementById('turnsGenerated')
-const turnCounter = document.getElementById('pointer')
-const btn = document.getElementById('pause');
-btn.onclick = pause_resume
-const gotoButton = document.getElementById('goto');
-let turnNumber = document.getElementById('turnNumber').value;
-gotoButton.onclick = goTo
