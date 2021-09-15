@@ -5,6 +5,8 @@ window.onload = function () {
 
 }
 
+
+
 class GameInstance {
   constructor(seedState, screen) {
     this.seed = seedState;
@@ -181,7 +183,7 @@ timer()
 function timer() {
   focusedInstance.tick()
   //tick();
-  setTimeout(timer, interval / speed);
+  setTimeout(timer, interval / focusedInstance.speed.value);
 }
 
 function keyDownHandler(e) {
