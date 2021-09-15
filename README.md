@@ -27,10 +27,12 @@ TODO:
     - Analysis of cell configurations/game rulesets for "interesting" results
     - Map onto the game state?
 
+- Discovery:
+    - Soup generation
+    - Identifying unique shapes/configurations
 - Modular Rules
 - Saving/Exporting Game states
 - Library of interesting configurations
-
 - A prettier Webpage!
 
 
