@@ -151,8 +151,8 @@ const width = (canvas.width = 480);//window.innerWidth
 const height = (canvas.height = 480);
 const pixel_size = 10;
 const chunks = 480 / pixel_size;
-const xOffset = 240;
-const yOffset = 240;
+let xOffset = 240;
+let yOffset = 240;
 
 
 //let pointer = 0;
@@ -207,6 +207,18 @@ function keyDownHandler(e) {
       break;
     case "ArrowLeft":
       focusedInstance.speed.value = focusedInstance.speed.value <= focusedInstance.speed.min ? focusedInstance.speed.min : focusedInstance.speed.value - 1;
+      break;
+    case "a":
+      xOffset += pixel_size;
+      break;
+    case "d":
+      xOffset -= pixel_size;
+      break;
+    case "w":
+      yOffset += pixel_size;
+      break;
+    case "s":
+      yOffset -= pixel_size;
       break;
 
   }
