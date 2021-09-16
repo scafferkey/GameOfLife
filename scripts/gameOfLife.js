@@ -17,7 +17,22 @@ class GameInstance {
     this.paused = false; //change to true when not debugging!
     this.screen = screen;
   }
-  //keeping timer out of it for now - need to bind, IIRC? sounds like trouble
+  static matrixToList(matrix){
+    let output = [];
+    for(let y = 0; y < matrix.length; y++){
+      for(let x = 0; x < matrix[y].length; x++){
+        if(matrix[y][x] == 1){
+          output.push([x,y]);
+        }
+      }
+    }
+    return output
+  }
+
+  timer() {
+    this.tick()
+    setTimeout(() => this.timer(), interval / focusedInstance.speed.value);
+  }
   step() {
     function match(element, list) {
       for (let i = 0; i < list.length; i++) {
