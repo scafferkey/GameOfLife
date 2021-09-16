@@ -14,7 +14,7 @@ class GameInstance {
     this.pointer = 0;
     this.speed = { "value": 10, "max": 30, "min": 1 }
     this.history = [this.seed,]
-    this.paused = true; //change to true when not debugging!
+    this.paused = false; //change to true when not debugging!
     this.screen = screen;
   }
   //keeping timer out of it for now - need to bind, IIRC? sounds like trouble
@@ -142,6 +142,11 @@ class GameInstance {
   pause_resume() {
     this.paused = !this.paused;
   }
+  timer() {
+    this.tick()
+    setTimeout(() => this.timer(), interval / focusedInstance.speed.value);
+  }
+  
 }
 
 
@@ -177,14 +182,14 @@ gotoButton.onclick = focusedInstance.goTo
 const interval = 1000
 let speed = 10;
 
-timer()
+focusedInstance.timer()
 
 
-function timer() {
+/* function timer() {
   focusedInstance.tick()
   //tick();
   setTimeout(timer, interval / focusedInstance.speed.value);
-}
+}  */
 
 function keyDownHandler(e) {
   //console.log(e.key)
@@ -209,16 +214,16 @@ function keyDownHandler(e) {
       focusedInstance.speed.value = focusedInstance.speed.value <= focusedInstance.speed.min ? focusedInstance.speed.min : focusedInstance.speed.value - 1;
       break;
     case "a":
-      xOffset += pixel_size;
+      xOffset += 2*pixel_size;
       break;
     case "d":
-      xOffset -= pixel_size;
+      xOffset -= 2*pixel_size;
       break;
     case "w":
-      yOffset += pixel_size;
+      yOffset += 2*pixel_size;
       break;
     case "s":
-      yOffset -= pixel_size;
+      yOffset -= 2*pixel_size;
       break;
 
   }
