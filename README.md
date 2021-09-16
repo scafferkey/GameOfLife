@@ -8,22 +8,33 @@ CURRENT FEATURES:
 
 TODO:
 
-- Time controls:
+- Time controls: (DONE! needs some fine tuning for speed, mind)
     - Pausing and resuming
     - Incrementing backwards/forwards by a step (when paused)
     - reverse speed?
     - Skip to beginning/last generated state
     - Fix counters so they update.
-- Allow for panning and zooming the canvas window using keyboard 
-- Important - Bundle functionality into an object!!
+- Important - Bundle functionality into a class!!
+    - Move update functions into class and make them reference the object (DONE!)
+    - Move the timer and alert functions into object 
+- General controls:
+    - Allow for panning and zooming the canvas window using keyboard
+    - Tool to convert 0/1 matrices into coords for inserting into the game
+    - Allow drawing things directly onto the screen
 - Data visualisation:
     - Tracking numbers of "alive" cells
+    - Implement temperature and density
+    - Analysis of cell configurations/game rulesets for "interesting" results
+    - Map onto the game state?
+
+- Discovery:
+    - Soup generation
+    - Identifying unique shapes/configurations
 - Modular Rules
 - Saving/Exporting Game states
 - Library of interesting configurations
-- Analysis of cell configurations/game rulesets for "interesting" results
 - A prettier Webpage!
-- Allow drawing things directly onto the screen
+
 
 Really far off:
 Alternate tiling systems (Hexagonal, triangular)
