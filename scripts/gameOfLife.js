@@ -33,17 +33,18 @@ class GameInstance {
     this.tick()
     setTimeout(() => this.timer(), interval / focusedInstance.speed.value);
   }
-  step() {
-    function match(element, list) {
-      for (let i = 0; i < list.length; i++) {
-        if (element[0] == list[i][0]
-          && element[1] == list[i][1]
-          && element.length == list[i].length) {
-          return true
-        }
+  static match(element, list) {
+    for (let i = 0; i < list.length; i++) {
+      if (element[0] == list[i][0]
+        && element[1] == list[i][1]
+        && element.length == list[i].length) {
+        return true
       }
-      return false
     }
+    return false
+  }
+  step() {
+    
     function getNeighborCount(coord, list) {
       let x = coord[0];
       let y = coord[1];
@@ -60,7 +61,7 @@ class GameInstance {
       let count = 0;
       for (let i = 0; i < neighborList.length; i++) {
         //
-        if (match(neighborList[i], list)) {
+        if (GameInstance.match(neighborList[i], list)) {
 
           count += 1;
         }
@@ -75,7 +76,7 @@ class GameInstance {
             let coord = [...list[i]];
             coord[0] += x;
             coord[1] += y;
-            if (!(match(coord, checkList))) {
+            if (!(GameInstance.match(coord, checkList))) {
               checkList.push(coord);
             }
           }
@@ -89,7 +90,7 @@ class GameInstance {
         let current = eligibleList[i];
         let count = getNeighborCount(current, liveList);
         //console.log(current,":",count);
-        if (!(match(current, liveList))) { //not currently live
+        if (!(GameInstance.match(current, liveList))) { //not currently live
           if (count == 3) { //becomes live only with three neighbors
             newLiveList.push(current);
           }
@@ -171,8 +172,8 @@ class GameInstance {
 
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
-const width = (canvas.width = 960);//window.innerWidth
-const height = (canvas.height = 480+240);
+const width = (canvas.width = 480);//window.innerWidth
+const height = (canvas.height = 480);
 let pixelSize = 10;
 let xOffset = width/2;
 let yOffset = height/2;
@@ -183,7 +184,7 @@ let bPentomino = GameInstance.matrixToCoords([[1,0,1],[1,0,1],[1,1,1]])
 let startState = [[0, 0], [0, 1], [1, 0], [1, 1], [0, 2]]
 let diehard = [[0, 1], [1, 1], [1, 0], [5, 0], [6, 0], [7, 0], [6, 2],]
 let rpent = [[0, 1], [1, 0], [1, 1], [1, 2], [2, 2]]
-
+let coordTest = [[0,0],[1,1],[-1,-1]];
 let focusedInstance = new GameInstance(rpent, ctx);
 focusedInstance.drawCells();
 
@@ -216,7 +217,17 @@ function clickHandler(event){
   //console.log(relX,relY)
   let gameX = Math.floor((relX - xOffset)/pixelSize);
   let gameY = Math.floor((relY - yOffset)/pixelSize);
-  console.log("Game coords:",gameX,",",gameY)
+  //console.log("Game coords:",gameX,",",gameY)
+  focusedInstance.paused = true;
+  {
+    if(GameInstance.match([gameX,gameY],focusedInstance.state)){
+      focusedInstance.state.splice(focusedInstance.state.indexOf([gameX,gameY]))
+      focusedInstance.drawCells()
+    }else{
+      focusedInstance.state.push([gameX,gameY])
+      focusedInstance.drawCells()
+    }
+  }
   //console.log(event)
 }
 
