@@ -21,8 +21,9 @@ TODO:
     - Allow for panning and zooming the canvas window using keyboard 
         -Basic Panning: updates offset, such that next step screen is shifted. Kinda awks! 
             -Fix: Redraws cells on shifting! (Needed to fix the order drawCells was called in the step method.)
+    - Zooming (Done!)
     - Tool to convert 0/1 matrices into coords for inserting into the game (DONE! needs testing, I guess?)
-    - Allow drawing things directly onto the screen
+    - Allow drawing things directly onto the screen 
 - Data visualisation:
     - Tracking numbers of "alive" cells
     - Implement temperature and density

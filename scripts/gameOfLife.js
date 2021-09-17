@@ -17,7 +17,7 @@ class GameInstance {
     this.paused = true; //change to true when not debugging!
     this.screen = screen;
   }
-  static matrixToList(matrix){
+  static matrixToCoords(matrix){
     let output = [];
     for(let y = 0; y < matrix.length; y++){
       for(let x = 0; x < matrix[y].length; x++){
@@ -110,16 +110,13 @@ class GameInstance {
     let nextState = getNextState(eligibleList, currentState);
     //console.log("updated state:",nextState)
     this.state = nextState;
-    this.drawCells();
+    this.drawCells(this.state);
     this.history.push(this.state);
-
   }
   goTo(turnNumber) {
     //turnNumber = document.getElementById('turnNumber').value;
-    console.log("Going!")
-
+    console.log("Goto: ",turnNumber)
     if (turnNumber < this.history.length && turnNumber >= 0) {
-      console.log("Stepping back")
       this.pointer = turnNumber
       this.drawCells(this.history[this.pointer])
     } else if (turnNumber >= this.history.length) {
@@ -130,13 +127,20 @@ class GameInstance {
     }
     updateCounters()
   }
-  drawCells(drawState = this.state) {
+  drawCells(drawState = null) {
+    if(drawState == null){
+      if(this.pointer < this.history.length - 1){
+        drawState = this.history[this.pointer];
+      }else{
+        drawState = this.state;
+      }
+    }
     this.screen.fillStyle = "rgba(50, 50, 50, 1)";
     this.screen.fillRect(0, 0, width, height);
     for (let i = 0; i < drawState.length; i++) {
 
       this.screen.beginPath();
-      this.screen.rect(drawState[i][0] * pixel_size + xOffset, drawState[i][1] * pixel_size + yOffset, pixel_size - 1, pixel_size - 1);
+      this.screen.rect(drawState[i][0] * pixelSize + xOffset, drawState[i][1] * pixelSize + yOffset, pixelSize - 1, pixelSize - 1);
       this.screen.fillStyle = "#EEEEEE";
       this.screen.fill();
       this.screen.closePath();
@@ -169,12 +173,13 @@ const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 const width = (canvas.width = 480);//window.innerWidth
 const height = (canvas.height = 480);
-const pixel_size = 10;
+let pixelSize = 10;
 let xOffset = 240;
 let yOffset = 240;
 
 
 //let pointer = 0;
+let bPentomino = GameInstance.matrixToCoords([[1,0,1],[1,0,1],[1,1,1]])
 let startState = [[0, 0], [0, 1], [1, 0], [1, 1], [0, 2]]
 let diehard = [[0, 1], [1, 1], [1, 0], [5, 0], [6, 0], [7, 0], [6, 2],]
 let rpent = [[0, 1], [1, 0], [1, 1], [1, 2], [2, 2]]
@@ -190,8 +195,12 @@ btn.onclick = function () {
   focusedInstance.pause_resume()
 }
 const gotoButton = document.getElementById('goto');
-let turnNumber = document.getElementById('turnNumber').value;
-gotoButton.onclick = focusedInstance.goTo
+let turnNumberInput = document.getElementById('turnNumber').value;
+gotoButton.onclick = function(){
+  //alert("function called!")
+  turnNumberInput = document.getElementById('turnNumber').value; //update turnnumber
+  focusedInstance.goTo(turnNumberInput)
+}
 
 const interval = 1000
 let speed = 10;
@@ -228,19 +237,28 @@ function keyDownHandler(e) {
       focusedInstance.speed.value = focusedInstance.speed.value <= focusedInstance.speed.min ? focusedInstance.speed.min : focusedInstance.speed.value - 1;
       break;
     case "a":
-      xOffset += 2*pixel_size;
+      xOffset += 2*pixelSize;
       focusedInstance.drawCells();
       break;
     case "d":
-      xOffset -= 2*pixel_size;
+      xOffset -= 2*pixelSize;
       focusedInstance.drawCells();
       break;
     case "w":
-      yOffset += 2*pixel_size;
+      yOffset += 2*pixelSize;
       focusedInstance.drawCells();
       break;
     case "s":
-      yOffset -= 2*pixel_size;
+      yOffset -= 2*pixelSize;
+      focusedInstance.drawCells();
+      break;
+    case "q":
+      console.log("Pixel size:",pixelSize)
+      pixelSize = pixelSize <= 3? 3 : pixelSize - 1; //pixels seem to disappear below three - spacing issue?
+      focusedInstance.drawCells();
+      break;
+    case "e":
+      pixelSize += 1;
       focusedInstance.drawCells();
       break;
 
