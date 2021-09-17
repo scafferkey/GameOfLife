@@ -1,8 +1,8 @@
 "use strict"
 
 window.onload = function () {
-  document.addEventListener("keydown", keyDownHandler, false);
-
+  document.addEventListener("keyup", keyUpHandler, false);
+  document.addEventListener("click",clickHandler,false)
 }
 
 
@@ -115,7 +115,7 @@ class GameInstance {
   }
   goTo(turnNumber) {
     //turnNumber = document.getElementById('turnNumber').value;
-    console.log("Goto: ",turnNumber)
+    //console.log("Goto: ",turnNumber)
     if (turnNumber < this.history.length && turnNumber >= 0) {
       this.pointer = turnNumber
       this.drawCells(this.history[this.pointer])
@@ -171,12 +171,12 @@ class GameInstance {
 
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
-const width = (canvas.width = 480);//window.innerWidth
-const height = (canvas.height = 480);
+const width = (canvas.width = 960);//window.innerWidth
+const height = (canvas.height = 480+240);
 let pixelSize = 10;
-let xOffset = 240;
-let yOffset = 240;
-
+let xOffset = width/2;
+let yOffset = height/2;
+let panStep = width/20;
 
 //let pointer = 0;
 let bPentomino = GameInstance.matrixToCoords([[1,0,1],[1,0,1],[1,1,1]])
@@ -208,13 +208,13 @@ let speed = 10;
 focusedInstance.timer()
 
 
-/* function timer() {
-  focusedInstance.tick()
-  //tick();
-  setTimeout(timer, interval / focusedInstance.speed.value);
-}  */
 
-function keyDownHandler(e) {
+function clickHandler(event){
+  console.log(event)
+  console.log(event.target)
+}
+
+function keyUpHandler(e) {
   //console.log(e.key)
 
   switch (e.key) {
@@ -237,19 +237,19 @@ function keyDownHandler(e) {
       focusedInstance.speed.value = focusedInstance.speed.value <= focusedInstance.speed.min ? focusedInstance.speed.min : focusedInstance.speed.value - 1;
       break;
     case "a":
-      xOffset += 2*pixelSize;
+      xOffset += panStep;
       focusedInstance.drawCells();
       break;
     case "d":
-      xOffset -= 2*pixelSize;
+      xOffset -= panStep;
       focusedInstance.drawCells();
       break;
     case "w":
-      yOffset += 2*pixelSize;
+      yOffset += panStep;
       focusedInstance.drawCells();
       break;
     case "s":
-      yOffset -= 2*pixelSize;
+      yOffset -= panStep;
       focusedInstance.drawCells();
       break;
     case "q":
