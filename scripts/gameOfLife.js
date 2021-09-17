@@ -83,7 +83,7 @@ class GameInstance {
       }
       return checkList;
     }
-    function update(eligibleList, liveList) {
+    function getNextState(eligibleList, liveList) {
       let newLiveList = [];
       for (let i = 0; i < eligibleList.length; i++) {
         let current = eligibleList[i];
@@ -107,7 +107,7 @@ class GameInstance {
     //console.log("beginning state",currentState)
     let eligibleList = getEligible(currentState);
     //console.log("eligibile",eligibleList)
-    let nextState = update(eligibleList, currentState);
+    let nextState = getNextState(eligibleList, currentState);
     //console.log("updated state:",nextState)
     this.state = nextState;
     this.drawCells();
