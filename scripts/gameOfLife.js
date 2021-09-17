@@ -207,11 +207,17 @@ let speed = 10;
 
 focusedInstance.timer()
 
-
+let canvasX = canvas.getBoundingClientRect().x;
+let canvasY = canvas.getBoundingClientRect().y;
 
 function clickHandler(event){
-  console.log(event)
-  console.log(event.target)
+  let relX = event.layerX - canvasX;
+  let relY = event.layerY - canvasY;
+  //console.log(relX,relY)
+  let gameX = Math.floor((relX - xOffset)/pixelSize);
+  let gameY = Math.floor((relY - yOffset)/pixelSize);
+  console.log("Game coords:",gameX,",",gameY)
+  //console.log(event)
 }
 
 function keyUpHandler(e) {
