@@ -10,11 +10,11 @@ window.onload = function () {
 class GameInstance {
   constructor(seedState, screen) {
     this.seed = seedState;
+    this.history = [this.seed,]
     this.state = this.seed;
     this.pointer = 0;
     this.speed = { "value": 10, "max": 30, "min": 1 }
-    this.history = [this.seed,]
-    this.paused = false; //change to true when not debugging!
+    this.paused = true; //change to true when not debugging!
     this.screen = screen;
   }
   static matrixToList(matrix){
@@ -105,12 +105,12 @@ class GameInstance {
     }
     let currentState = this.state;
     //console.log("beginning state",currentState)
-    this.drawCells(currentState);
     let eligibleList = getEligible(currentState);
     //console.log("eligibile",eligibleList)
     let nextState = update(eligibleList, currentState);
     //console.log("updated state:",nextState)
     this.state = nextState;
+    this.drawCells();
     this.history.push(this.state);
 
   }
@@ -170,7 +170,6 @@ const ctx = canvas.getContext("2d");
 const width = (canvas.width = 480);//window.innerWidth
 const height = (canvas.height = 480);
 const pixel_size = 10;
-const chunks = 480 / pixel_size;
 let xOffset = 240;
 let yOffset = 240;
 
@@ -230,15 +229,19 @@ function keyDownHandler(e) {
       break;
     case "a":
       xOffset += 2*pixel_size;
+      focusedInstance.drawCells();
       break;
     case "d":
       xOffset -= 2*pixel_size;
+      focusedInstance.drawCells();
       break;
     case "w":
       yOffset += 2*pixel_size;
+      focusedInstance.drawCells();
       break;
     case "s":
       yOffset -= 2*pixel_size;
+      focusedInstance.drawCells();
       break;
 
   }
