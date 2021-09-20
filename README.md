@@ -18,9 +18,15 @@ TODO:
     - Move update functions into class and make them reference the object (DONE!)
     - Move the timer and alert functions into object 
 - General controls:
-    - Allow for panning and zooming the canvas window using keyboard
-    - Tool to convert 0/1 matrices into coords for inserting into the game
-    - Allow drawing things directly onto the screen
+    - Allow for panning and zooming the canvas window using keyboard 
+        -Basic Panning: updates offset, such that next step screen is shifted. Kinda awks! 
+            -Fix: Redraws cells on shifting! (Needed to fix the order drawCells was called in the step method.)
+    - Zooming (Done!)
+    - Tool to convert 0/1 matrices into coords for inserting into the game (DONE! needs testing, I guess?)
+    - Allow drawing things directly onto the screen 
+        - Partly done - works, but allows directly editing the game in motion (not making a new seed, I guess?) and needs testing on larger canvass windows
+            - Testing on larger windows
+            - Potential bonuses - draw lines by dragging
 - Data visualisation:
     - Tracking numbers of "alive" cells
     - Implement temperature and density
