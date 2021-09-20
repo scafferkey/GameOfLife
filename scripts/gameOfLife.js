@@ -6,7 +6,6 @@ window.onload = function () {
 }
 
 
-
 class GameInstance {
   constructor(seedState, screen) {
     this.seed = seedState;
@@ -28,20 +27,20 @@ class GameInstance {
     }
     return output
   }
-
-  timer() {
-    this.tick()
-    setTimeout(() => this.timer(), interval / focusedInstance.speed.value);
-  }
+  
   static match(element, list) {
     for (let i = 0; i < list.length; i++) {
       if (element[0] == list[i][0]
         && element[1] == list[i][1]
         && element.length == list[i].length) {
-        return true
+        return i
       }
     }
-    return false
+    return -1
+  }
+  timer() {
+    this.tick()
+    setTimeout(() => this.timer(), interval / focusedInstance.speed.value);
   }
   step() {
     
@@ -61,7 +60,7 @@ class GameInstance {
       let count = 0;
       for (let i = 0; i < neighborList.length; i++) {
         //
-        if (GameInstance.match(neighborList[i], list)) {
+        if ((GameInstance.match(neighborList[i], list)) != -1 ) {
 
           count += 1;
         }
@@ -76,7 +75,7 @@ class GameInstance {
             let coord = [...list[i]];
             coord[0] += x;
             coord[1] += y;
-            if (!(GameInstance.match(coord, checkList))) {
+            if (!(GameInstance.match(coord, checkList) != -1)) {
               checkList.push(coord);
             }
           }
@@ -90,7 +89,7 @@ class GameInstance {
         let current = eligibleList[i];
         let count = getNeighborCount(current, liveList);
         //console.log(current,":",count);
-        if (!(GameInstance.match(current, liveList))) { //not currently live
+        if ((GameInstance.match(current, liveList) == -1)) { //not currently live
           if (count == 3) { //becomes live only with three neighbors
             newLiveList.push(current);
           }
@@ -209,9 +208,21 @@ let speed = 10;
 focusedInstance.timer()
 
 let canvasX = canvas.getBoundingClientRect().x;
+let canvasWidth = canvas.getBoundingClientRect().width;
 let canvasY = canvas.getBoundingClientRect().y;
+let canvasHeight = canvas.getBoundingClientRect().height;
+
+function isOnScreen(x,y){
+  if((x > canvasX && x < canvasX + canvasWidth)
+  && (y > canvasY && y < canvasY + canvasHeight)){
+    return true
+  }else {
+    return false
+  }
+}
 
 function clickHandler(event){
+  if(isOnScreen(event.layerX,event.layerY)){
   let relX = event.layerX - canvasX;
   let relY = event.layerY - canvasY;
   //console.log(relX,relY)
@@ -220,14 +231,18 @@ function clickHandler(event){
   //console.log("Game coords:",gameX,",",gameY)
   focusedInstance.paused = true;
   {
-    if(GameInstance.match([gameX,gameY],focusedInstance.state)){
-      focusedInstance.state.splice(focusedInstance.state.indexOf([gameX,gameY]))
+    if(GameInstance.match([gameX,gameY],focusedInstance.state) != -1){
+      //console.log("removing:",[gameX,gameY])
+      let index = GameInstance.match([gameX,gameY],focusedInstance.state);
+      //console.log("index:",index)
+      focusedInstance.state.splice(index,1)
       focusedInstance.drawCells()
     }else{
       focusedInstance.state.push([gameX,gameY])
       focusedInstance.drawCells()
     }
   }
+}
   //console.log(event)
 }
 
@@ -270,7 +285,6 @@ function keyUpHandler(e) {
       focusedInstance.drawCells();
       break;
     case "q":
-      console.log("Pixel size:",pixelSize)
       pixelSize = pixelSize <= 3? 3 : pixelSize - 1; //pixels seem to disappear below three - spacing issue?
       focusedInstance.drawCells();
       break;
