@@ -223,8 +223,8 @@ function isOnScreen(x,y){
   }
 }
 function getGameCoords(x,y){
-  let relX = event.layerX - canvasX;
-  let relY = event.layerY - canvasY;
+  let relX = x - canvasX;
+  let relY = y - canvasY;
   //console.log(relX,relY)
   let gameX = Math.floor((relX - xOffset)/pixelSize);
   let gameY = Math.floor((relY - yOffset)/pixelSize);

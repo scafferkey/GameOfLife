@@ -27,6 +27,8 @@ TODO:
         - Partly done - works, but allows directly editing the game in motion (not making a new seed, I guess?) and needs testing on larger canvass windows
             - Testing on larger windows
             - Potential bonuses - draw lines by dragging
+- Automated tests:
+    - Unit tests for functions! important!!
 - Data visualisation:
     - Tracking numbers of "alive" cells
     - Implement temperature and density
