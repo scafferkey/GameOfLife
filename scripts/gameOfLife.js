@@ -169,10 +169,11 @@ class GameInstance {
 }
 
 
+
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
-const width = (canvas.width = 480);//window.innerWidth
-const height = (canvas.height = 480);
+const width = (canvas.width = 800);//window.innerWidth
+const height = (canvas.height = 800);
 let pixelSize = 10;
 let xOffset = width/2;
 let yOffset = height/2;
@@ -184,6 +185,7 @@ let startState = [[0, 0], [0, 1], [1, 0], [1, 1], [0, 2]]
 let diehard = [[0, 1], [1, 1], [1, 0], [5, 0], [6, 0], [7, 0], [6, 2],]
 let rpent = [[0, 1], [1, 0], [1, 1], [1, 2], [2, 2]]
 let coordTest = [[0,0],[1,1],[-1,-1]];
+
 let focusedInstance = new GameInstance(rpent, ctx);
 focusedInstance.drawCells();
 
@@ -220,25 +222,26 @@ function isOnScreen(x,y){
     return false
   }
 }
-
-function clickHandler(event){
-  if(isOnScreen(event.layerX,event.layerY)){
+function getGameCoords(x,y){
   let relX = event.layerX - canvasX;
   let relY = event.layerY - canvasY;
   //console.log(relX,relY)
   let gameX = Math.floor((relX - xOffset)/pixelSize);
   let gameY = Math.floor((relY - yOffset)/pixelSize);
+  return [gameX,gameY]
+}
+function clickHandler(event){
+  if(isOnScreen(event.layerX,event.layerY)){
+  let gameCoords = getGameCoords(event.layerX,event.layerY)
   //console.log("Game coords:",gameX,",",gameY)
   focusedInstance.paused = true;
+  let index = GameInstance.match(gameCoords,focusedInstance.state);
   {
-    if(GameInstance.match([gameX,gameY],focusedInstance.state) != -1){
-      //console.log("removing:",[gameX,gameY])
-      let index = GameInstance.match([gameX,gameY],focusedInstance.state);
-      //console.log("index:",index)
-      focusedInstance.state.splice(index,1)
+    if(index != -1){
+      focusedInstance.state.splice(index,1) //remove cell from list
       focusedInstance.drawCells()
     }else{
-      focusedInstance.state.push([gameX,gameY])
+      focusedInstance.state.push(gameCoords) //add cell to list
       focusedInstance.drawCells()
     }
   }

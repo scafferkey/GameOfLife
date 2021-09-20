@@ -25,6 +25,8 @@ TODO:
     - Tool to convert 0/1 matrices into coords for inserting into the game (DONE! needs testing, I guess?)
     - Allow drawing things directly onto the screen 
         - Partly done - works, but allows directly editing the game in motion (not making a new seed, I guess?) and needs testing on larger canvass windows
+            - Testing on larger windows
+            - Potential bonuses - draw lines by dragging
 - Data visualisation:
     - Tracking numbers of "alive" cells
     - Implement temperature and density
