@@ -61,10 +61,25 @@ describe("match",function() {
         })
     })
 })
-describe("methods",function(){
-    describe("getEligible",function(){
-        it("for a single value at 0,0",function(){
-            compareArrays(GameInstance.step.getEligible([0,0]),[[-1,-1],[-1,0],[-1,1],[0,-1],[0,0],[0,1],[1,-1],[1,0],[1,1]])
+describe("Game Instance methods",function(){
+    describe("step",function(){
+        it("A single cell disappears",function(){
+            let testInstance = new GameInstance([[0,0]],ctx)
+            testInstance.step()
+            expect(testInstance.state).to.deep.equal([])
+            delete testInstance
+        })
+        it("a 2x2 block gives unchanging",function(){
+            let testInstance = new GameInstance([[0,0],[1,0],[0,1],[1,1]],ctx)
+            testInstance.step()
+            expect(testInstance.state).to.deep.equal([[0,0],[0,1],[1,0],[1,1]])
+            delete testInstance
+        })
+        it("3 blocks reduce to one",function(){
+            let testInstance = new GameInstance([[0,0],[1,1],[-1,2]],ctx)
+            testInstance.step()
+            expect(testInstance.state).to.deep.equal([[0,1]])
+            delete testInstance
         })
     })
 })

@@ -38,6 +38,23 @@ class GameInstance {
     }
     return -1
   }
+
+  static generateSoup(sideLength, density = 0.6){
+    density = density > 0.99 ? 0.99 : density;
+    density = density < 0.01 ? 0.01 : density;
+    let length = sideLength ** 2;
+    let ones = Math.floor(length*density);
+    let orderedArray = []
+    for(let i=0;i<length;i++){
+      i < ones ? orderedArray.push(1) : orderedArray.push(0);
+    }
+    shuffleArray(orderedArray)
+    let output = []
+    while(orderedArray.length > 0){
+      output.push(orderedArray.splice(-sideLength))
+    }
+    return GameInstance.matrixToCoords(output)
+  }
   timer() {
     this.tick()
     setTimeout(() => this.timer(), interval / focusedInstance.speed.value);
@@ -186,7 +203,7 @@ let diehard = [[0, 1], [1, 1], [1, 0], [5, 0], [6, 0], [7, 0], [6, 2],]
 let rpent = [[0, 1], [1, 0], [1, 1], [1, 2], [2, 2]]
 let coordTest = [[0,0],[1,1],[-1,-1]];
 
-let focusedInstance = new GameInstance(rpent, ctx);
+let focusedInstance = new GameInstance(GameInstance.generateSoup(100,0.3), ctx);
 focusedInstance.drawCells();
 
 const turnsGenerated = document.getElementById('turnsGenerated')
@@ -231,7 +248,7 @@ function getGameCoords(x,y){
   return [gameX,gameY]
 }
 function clickHandler(event){
-  if(isOnScreen(event.layerX,event.layerY)){
+  if(isOnScreen(event.layerX,event.layerY) && focusedInstance.pointer == focusedInstance.history.length-1){
   let gameCoords = getGameCoords(event.layerX,event.layerY)
   //console.log("Game coords:",gameX,",",gameY)
   focusedInstance.paused = true;
@@ -303,4 +320,10 @@ function keyUpHandler(e) {
 function updateCounters() {
   turnCounter.textContent = focusedInstance.pointer;
   turnsGenerated.textContent = focusedInstance.history.length - 1;
+}
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+  }
 }
