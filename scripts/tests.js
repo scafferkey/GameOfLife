@@ -21,7 +21,7 @@ function compareArrays(array1,array2){
 describe("matrixToCoords",function(){
     describe("Base cases:",function(){
         it("1x1 matrix, full",function(){
-            assert(compareArrays(GameInstance.matrixToCoords([[1]]),[[0,0]]))
+            expect(GameInstance.matrixToCoords([[1]])).to.deep.equal([[0,0]])
         })
         it("1x1 matrix, empty",function(){
             assert(compareArrays(GameInstance.matrixToCoords([[0]]),[]))
@@ -46,5 +46,25 @@ describe("matrixToCoords",function(){
         it("fed a matrix not containing 1/0")
         it("called on a list that's too shallow")
         it("called on a list that's too deep")
+    })
+})
+describe("match",function() {
+    describe("Base cases",function(){
+        it("Finding element in single element list",function(){
+            assert.equal(GameInstance.match([0,0],[[0,0]]),0)
+        })
+        it("finds string equivalent in single element list",function(){
+            assert.equal(GameInstance.match([0,0],[["0","0"]]),0)
+        })
+        it("returns -1 on an empty list",function(){
+            assert.equal(GameInstance.match([0,0],[]),-1)
+        })
+    })
+})
+describe("methods",function(){
+    describe("getEligible",function(){
+        it("for a single value at 0,0",function(){
+            compareArrays(GameInstance.step.getEligible([0,0]),[[-1,-1],[-1,0],[-1,1],[0,-1],[0,0],[0,1],[1,-1],[1,0],[1,1]])
+        })
     })
 })
