@@ -29,6 +29,8 @@ TODO:
             - Potential bonuses - draw lines by dragging
 - Automated tests:
     - Unit tests for functions! important!!
+Optimisation:
+    - Replace list with a map (or set might be better?)
 - Data visualisation:
     - Tracking numbers of "alive" cells
     - Implement temperature and density

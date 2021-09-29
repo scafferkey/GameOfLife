@@ -1,22 +1,17 @@
 
 
-function compareArrays(array1,array2){
-    if(array1.length != array2.length){
-        return false
-    }
-    for(let i = 0; i < array1.length; i++){
-        if(Array.isArray(array1) && Array.isArray(array2)){
-            if(!(compareArrays(array1[i],array2[i]))){
-                return false;
-            }
-        }else if(typeof(array1[i]) != typeof(array2[i])){
-            return false;
-        }else if(array1[i] != array2[i]){
-            return false;
-        }
-    }
-    return true
-}
+describe("Set Checks",function(){
+    it("Default deep equality",function(){
+        let a = new Set([0,0],[1,1])
+        let b = new Set([0,0],[1,1])
+        assert.deepEqual(a,b)
+    })
+    it("Unordered deep equality",function(){
+        let a = new Set([0,0],[1,1])
+        let b = new Set([1,1],[0,0])
+        assert.deepEqual(a,b)
+    })
+})
 
 describe("matrixToCoords",function(){
     describe("Base cases:",function(){
@@ -51,13 +46,28 @@ describe("matrixToCoords",function(){
 describe("match",function() {
     describe("Base cases",function(){
         it("Finding element in single element list",function(){
-            assert.equal(GameInstance.match([0,0],[[0,0]]),0)
+            assert.equal(GameInstance.match([0,0],new Set([[0,0]])),true)
         })
-        it("finds string equivalent in single element list",function(){
-            assert.equal(GameInstance.match([0,0],[["0","0"]]),0)
+        it("returns false on an empty list",function(){
+            assert.equal(GameInstance.match([0,0],new Set()),false)
         })
-        it("returns -1 on an empty list",function(){
-            assert.equal(GameInstance.match([0,0],[]),-1)
+    })
+    describe("a few examples",function(){
+        let a = new Set([[0,0][1,1],[2,2]]);
+        it("finds 0,0 is true",function(){
+            assert.equal(GameInstance.match([0,0],a),true)
+        })
+        it("finds 1,1 is true",function(){
+            assert.equal(GameInstance.match([1,1],a),true)
+        })
+        it("finds 2,2 is true",function(){
+            assert.equal(GameInstance.match([2,2],a),true)
+        })
+        it("finds 0,1 is false",function(){
+            assert.equal(GameInstance.match([0,1],a),false)
+        })
+        it("finds 2,1 is false",function(){
+            assert.equal(GameInstance.match([2,1],a),false)
         })
     })
 })

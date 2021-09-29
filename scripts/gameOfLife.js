@@ -2,15 +2,15 @@
 
 window.onload = function () {
   document.addEventListener("keyup", keyUpHandler, false);
-  document.addEventListener("click",clickHandler,false)
+  //document.addEventListener("click",clickHandler,false)
 }
 
 
 class GameInstance {
   constructor(seedState, screen) {
-    this.seed = seedState;
-    this.history = [this.seed,]
-    this.state = this.seed;
+    this.seed = writeCoordString(seedState);
+    this.state = new Set(this.seed);
+    this.history = [this.state,]
     this.pointer = 0;
     this.speed = { "value": 10, "max": 30, "min": 1 }
     this.paused = true; //change to true when not debugging!
@@ -28,15 +28,8 @@ class GameInstance {
     return output
   }
   
-  static match(element, list) {
-    for (let i = 0; i < list.length; i++) {
-      if (element[0] == list[i][0]
-        && element[1] == list[i][1]
-        && element.length == list[i].length) {
-        return i
-      }
-    }
-    return -1
+  static match(element, searchSet) {
+    return searchSet.has(element)
   }
 
   static generateSoup(sideLength, density = 0.6){
@@ -60,10 +53,35 @@ class GameInstance {
     setTimeout(() => this.timer(), interval / focusedInstance.speed.value);
   }
   step() {
-    
+    function getEligible(list, xRange = 1, yRange = 1) {
+      // list needs to be a numeric coordinate or converted into one
+      let convList = readCoordString(list)
+      let checkList = new Set();
+      
+      for (let coord of convList) {
+        for (let x = -1 * xRange; x <= xRange; x++) {
+          for (let y = -1 * yRange; y <= yRange; y++) {
+            // console.log("before",coord)
+            let newX = coord[0] + x;
+            let newY = coord[1] + y;
+            let newCoord = makeStringCoord(newX,newY);
+            // console.log("after",coord)
+            // console.log("new X and Y",newX,newY)
+            // console.log("new",newCoord)
+            checkList.add(newCoord)
+            /* if (!(GameInstance.match(coord, checkList) != -1)) {
+              checkList.push(coord);
+            } */
+          }
+        }
+      }
+      return checkList;
+    }
     function getNeighborCount(coord, list) {
-      let x = coord[0];
-      let y = coord[1];
+      // console.log("inputs passed to getNeighborCount",coord,list)
+      let numCoord = makeNumericCoord(coord)
+      let x = numCoord[0];
+      let y = numCoord[1];
       let neighborList = [
         [x - 1, y - 1],
         [x, y - 1],
@@ -74,45 +92,31 @@ class GameInstance {
         [x, y + 1],
         [x + 1, y + 1]
       ];
+      let stringNeighborList = writeCoordString(neighborList)
       let count = 0;
-      for (let i = 0; i < neighborList.length; i++) {
-        //
-        if ((GameInstance.match(neighborList[i], list)) != -1 ) {
+      for (let i = 0; i < stringNeighborList.length; i++) {
+        // console.log("getNeighborCount:",i,neighborList[i],(GameInstance.match(neighborList[i], list)))
+        if ((GameInstance.match(stringNeighborList[i], list))) {
 
           count += 1;
         }
       }
       return count;
     }
-    function getEligible(list, xRange = 1, yRange = 1) {
-      let checkList = [];
-      for (let i = 0; i < list.length; i++) {
-        for (let x = -1 * xRange; x <= xRange; x++) {
-          for (let y = -1 * yRange; y <= yRange; y++) {
-            let coord = [...list[i]];
-            coord[0] += x;
-            coord[1] += y;
-            if (!(GameInstance.match(coord, checkList) != -1)) {
-              checkList.push(coord);
-            }
-          }
-        }
-      }
-      return checkList;
-    }
+    
     function getNextState(eligibleList, liveList) {
-      let newLiveList = [];
-      for (let i = 0; i < eligibleList.length; i++) {
-        let current = eligibleList[i];
+      let newLiveList = new Set();
+
+      for (let current of eligibleList) {
         let count = getNeighborCount(current, liveList);
-        //console.log(current,":",count);
-        if ((GameInstance.match(current, liveList) == -1)) { //not currently live
+        console.log("getNextState",current,":",count);
+        if (!(GameInstance.match(current, liveList))) { //not currently live
           if (count == 3) { //becomes live only with three neighbors
-            newLiveList.push(current);
+            newLiveList.add(current);
           }
         } else {
           if (count == 2 || count == 3) { //needs 2 or three neighbors to survive
-            newLiveList.push(current);
+            newLiveList.add(current);
           }
         }
 
@@ -120,12 +124,13 @@ class GameInstance {
       }
       return newLiveList;
     }
+    // at this level, all variables should be string texts
     let currentState = this.state;
-    //console.log("beginning state",currentState)
+    console.log("beginning state",currentState)
     let eligibleList = getEligible(currentState);
-    //console.log("eligibile",eligibleList)
+    console.log("eligibile",eligibleList)
     let nextState = getNextState(eligibleList, currentState);
-    //console.log("updated state:",nextState)
+    console.log("updated state:",nextState)
     this.state = nextState;
     this.drawCells(this.state);
     this.history.push(this.state);
@@ -147,23 +152,25 @@ class GameInstance {
   drawCells(drawState = null) {
     if(drawState == null){
       if(this.pointer < this.history.length - 1){
-        drawState = this.history[this.pointer];
+        drawState = (this.history[this.pointer]);
       }else{
         drawState = this.state;
       }
     }
+    drawState = readCoordString(drawState)
     this.screen.fillStyle = "rgba(50, 50, 50, 1)";
     this.screen.fillRect(0, 0, width, height);
-    for (let i = 0; i < drawState.length; i++) {
+    for (let cell of drawState) {
 
       this.screen.beginPath();
-      this.screen.rect(drawState[i][0] * pixelSize + xOffset, drawState[i][1] * pixelSize + yOffset, pixelSize - 1, pixelSize - 1);
+      this.screen.rect(cell[0] * pixelSize + xOffset, cell[1] * pixelSize + yOffset, pixelSize - 1, pixelSize - 1);
       this.screen.fillStyle = "#EEEEEE";
       this.screen.fill();
       this.screen.closePath();
     }
   }
   tick() {
+    
     if (!this.paused) {
       if (this.pointer < this.history.length - 1) {
         this.drawCells(this.history[this.pointer])
@@ -197,14 +204,26 @@ let yOffset = height/2;
 let panStep = width/20;
 
 //let pointer = 0;
-let bPentomino = GameInstance.matrixToCoords([[1,0,1],[1,0,1],[1,1,1]])
-let startState = [[0, 0], [0, 1], [1, 0], [1, 1], [0, 2]]
-let diehard = [[0, 1], [1, 1], [1, 0], [5, 0], [6, 0], [7, 0], [6, 2],]
-let rpent = [[0, 1], [1, 0], [1, 1], [1, 2], [2, 2]]
+let standardSoup = GameInstance.generateSoup(100,0.6)
+let bPentomino = GameInstance.matrixToCoords([[1,0,1],[1,0,1],[1,1,1]]);
+let startState = [[0, 0], [0, 1], [1, 0], [1, 1], [0, 2]];
+let diehard = [[0, 1], [1, 1], [1, 0], [5, 0], [6, 0], [7, 0], [6, 2],];
+let rpent = [[0, 1], [1, 0], [1, 1], [1, 2], [2, 2]];
+let block = [[0,0],[0,1],[1,0],[1,1]];
+let altpent = [[0, 1], [1, 1], [1, 0], [1, 2], [2, 2]]; //reordered rpent for fun test purposes. probably delete later
 let coordTest = [[0,0],[1,1],[-1,-1]];
 
-let focusedInstance = new GameInstance(GameInstance.generateSoup(100,0.3), ctx);
+
+let focusedInstance = new GameInstance(standardSoup, ctx);
 focusedInstance.drawCells();
+
+
+/* let testSet = new Set(rpent);
+for(let coord of testSet){
+  console.log(coord)
+  console.log(testSet.has(coord))
+  console.log(GameInstance.match(coord,testSet))
+} */
 
 const turnsGenerated = document.getElementById('turnsGenerated')
 const turnCounter = document.getElementById('pointer')
@@ -326,4 +345,30 @@ function shuffleArray(array) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
   }
+}
+function writeCoordString(coordList){
+  let output = []
+  for(let coord of coordList){
+    output.push(coord[0].toString() + ":" + coord[1].toString())
+  }
+  return output
+}
+// let testString = writeCoordString(new Set(rpent));
+// console.log(testString)
+function readCoordString(stringCoordList){
+  let output = []
+  for(let stringC of stringCoordList){
+    let nums =stringC.split(":")
+    output.push([parseInt(nums[0]),parseInt(nums[1])])
+  }
+  return output
+}
+// console.log(readCoordString(testString))
+
+function makeStringCoord(x,y){
+  return x.toString() + ":" + y.toString()
+}
+function makeNumericCoord(stringCoord){
+  let nums =stringCoord.split(":")
+  return [parseInt(nums[0]),parseInt(nums[1])]
 }
