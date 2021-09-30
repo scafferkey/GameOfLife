@@ -2,7 +2,7 @@
 
 window.onload = function () {
   document.addEventListener("keyup", keyUpHandler, false);
-  //document.addEventListener("click",clickHandler,false)
+  document.addEventListener("click",clickHandler,false)
 }
 
 
@@ -214,7 +214,7 @@ let altpent = [[0, 1], [1, 1], [1, 0], [1, 2], [2, 2]]; //reordered rpent for fu
 let coordTest = [[0,0],[1,1],[-1,-1]];
 
 
-let focusedInstance = new GameInstance(standardSoup, ctx);
+let focusedInstance = new GameInstance(bPentomino, ctx);
 focusedInstance.drawCells();
 
 
@@ -266,18 +266,19 @@ function getGameCoords(x,y){
   let gameY = Math.floor((relY - yOffset)/pixelSize);
   return [gameX,gameY]
 }
+
 function clickHandler(event){
   if(isOnScreen(event.layerX,event.layerY) && focusedInstance.pointer == focusedInstance.history.length-1){
-  let gameCoords = getGameCoords(event.layerX,event.layerY)
+  let gameCoords = makeStringCoord(...getGameCoords(event.layerX,event.layerY))
   //console.log("Game coords:",gameX,",",gameY)
   focusedInstance.paused = true;
   let index = GameInstance.match(gameCoords,focusedInstance.state);
   {
-    if(index != -1){
-      focusedInstance.state.splice(index,1) //remove cell from list
+    if(index){
+      focusedInstance.state.delete(gameCoords) //remove cell from list
       focusedInstance.drawCells()
     }else{
-      focusedInstance.state.push(gameCoords) //add cell to list
+      focusedInstance.state.add(gameCoords) //add cell to list
       focusedInstance.drawCells()
     }
   }
