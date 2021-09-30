@@ -27,6 +27,11 @@ TODO:
         - Partly done - works, but allows directly editing the game in motion (not making a new seed, I guess?) and needs testing on larger canvass windows
             - Testing on larger windows
             - Potential bonuses - draw lines by dragging
+- Automated tests:
+    - Unit tests for functions! important!!
+Optimisation:
+    - Replace list with a map (or set might be better?)
+    - Track sleeping cells, etc.
 - Data visualisation:
     - Tracking numbers of "alive" cells
     - Implement temperature and density
@@ -37,6 +42,9 @@ TODO:
     - Soup generation
     - Identifying unique shapes/configurations
 - Modular Rules
+    - Allow for different survive/born numbers
+    - Allow for different neighborhoods
+    - Different Tiling systems?
 - Saving/Exporting Game states
 - Library of interesting configurations
 - A prettier Webpage!
