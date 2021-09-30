@@ -31,6 +31,7 @@ TODO:
     - Unit tests for functions! important!!
 Optimisation:
     - Replace list with a map (or set might be better?)
+    - Track sleeping cells, etc.
 - Data visualisation:
     - Tracking numbers of "alive" cells
     - Implement temperature and density
@@ -41,6 +42,9 @@ Optimisation:
     - Soup generation
     - Identifying unique shapes/configurations
 - Modular Rules
+    - Allow for different survive/born numbers
+    - Allow for different neighborhoods
+    - Different Tiling systems?
 - Saving/Exporting Game states
 - Library of interesting configurations
 - A prettier Webpage!
