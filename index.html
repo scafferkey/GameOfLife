@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Gamedev Canvas Workshop</title>
+    <style>
+    	* { padding: 0; margin: 0; }
+    	canvas { background: #eee; display: block; margin: 0 auto; }
+    </style>
+</head>
+<body>
+<br>
+<canvas id="myCanvas" width="480" height="480"></canvas>
+<div align="center">
+    <button id="pause" class="button">Pause/Resume</button>
+    <button id="goto" class="button">Go to step:</button><input type="number" id='turnNumber' value="20">
+</div >
+    
+<div align="center">
+    <p>Looking at turn: <em id='pointer'>0</em> <br>
+    Furthest turn generated: <em id='turnsGenerated'>0</em>
+    </p>
+</div>
+<script src="scripts/gameOfLife.js"></script>
+
+</body>
