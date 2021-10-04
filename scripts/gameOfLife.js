@@ -1,5 +1,4 @@
 "use strict"
-import * as d3 from "https://cdn.skypack.dev/d3@7";
 
 window.onload = function () {
   document.addEventListener("keyup", keyUpHandler, false);
@@ -268,27 +267,6 @@ let canvasX = canvas.getBoundingClientRect().x;
 let canvasWidth = canvas.getBoundingClientRect().width;
 let canvasY = canvas.getBoundingClientRect().y;
 let canvasHeight = canvas.getBoundingClientRect().height;
-
-
-let data = [1,2,3,4,5,7,8,9,10];
-
-
-const div = d3.create("div")
-    .style("font", "10px sans-serif")
-    .style("text-align", "right")
-    .style("color", "white");
-
-function makeChart() {const bar = div.selectAll("div");
-const barUpdate = bar.data(data); //replace data later
-const barNew = barUpdate.join("div");
-barNew.style("background", "steelblue");
-barNew.style("padding", "3px");
-barNew.style("margin", "1px");
-barNew.style("width", d => `${d * 10}px`);
-barNew.text(d => d);
-return div.node()
-}
-makeChart()
 
 function isOnScreen(x, y) {
   if ((x > canvasX && x < canvasX + canvasWidth)
