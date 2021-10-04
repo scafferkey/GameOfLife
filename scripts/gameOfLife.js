@@ -294,9 +294,11 @@ function clickHandler(event) {
     {
       if (index) {
         focusedInstance.state.delete(gameCoords) //remove cell from list
+        focusedInstance.changes.add(gameCoords)
         focusedInstance.drawCells()
       } else {
         focusedInstance.state.add(gameCoords) //add cell to list
+        focusedInstance.changes.add(gameCoords)
         focusedInstance.drawCells()
       }
     }
