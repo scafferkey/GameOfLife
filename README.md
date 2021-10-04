@@ -32,6 +32,7 @@ TODO:
 Optimisation:
     - Replace list with a map (or set might be better?)
     - Track sleeping cells, etc.
+        - Clicked in cells must be added to awake list!
 - Data visualisation:
     - Tracking numbers of "alive" cells
     - Implement temperature and density
