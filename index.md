@@ -20,6 +20,7 @@
     <p>Looking at turn: <em id='pointer'>0</em> <br>
     Furthest turn generated: <em id='turnsGenerated'>0</em>
     </p>
+    <p>this is the markdown page</p>
 </div>
 <script src="scripts/gameOfLife.js"></script>
 
