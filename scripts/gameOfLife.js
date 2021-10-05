@@ -17,6 +17,7 @@ class GameInstance {
     this.paused = true; 
     this.screen = screen;
     this.rule = rule;
+    this.data = [this.state.size,]
   }
   static matrixToCoords(matrix) {
     let output = [];
@@ -153,6 +154,8 @@ class GameInstance {
     this.changes = changes;
     this.drawCells(this.state);
     this.history.push(this.state);
+    this.data.push(this.state.size)
+    updateGraph(this.data)
   }
   goTo(turnNumber) {
     
@@ -242,7 +245,7 @@ let mazectricRule = { born: [3], survive: [1, 2, 3, 4] }
 let replicatorRule = { born: [1, 3, 5, 7], survive: [1, 3, 5, 7] }
 
 
-let focusedInstance = new GameInstance(diehard, ctx, standardGameRule);
+let focusedInstance = new GameInstance(rpent, ctx, standardGameRule);
 focusedInstance.drawCells();
 
 const turnsGenerated = document.getElementById('turnsGenerated')
@@ -267,6 +270,37 @@ let canvasX = canvas.getBoundingClientRect().x;
 let canvasWidth = canvas.getBoundingClientRect().width;
 let canvasY = canvas.getBoundingClientRect().y;
 let canvasHeight = canvas.getBoundingClientRect().height;
+
+const graphWidth = 400;
+const graphHeight = 400
+const padding = 10
+const svg = d3.select("body")
+    .append("svg")
+    .attr("width",graphWidth)
+    .attr("height",graphHeight)
+
+function updateGraph(dataset){
+  console.log("updateGraph being fired!")
+  console.log("dataset:",dataset)
+//let dataset = focusedInstance.data  //[1,2,3,4,5,8,9,10,30,25,12]
+let max = d3.max(dataset)
+let yScale = d3.scaleLinear()
+               .domain([0,d3.max(dataset)])
+               .range([0,graphHeight - padding])
+let xScale = d3.scaleLinear()
+                .domain([1,dataset.length])
+                .range([padding,graphWidth -padding])
+
+ d3.select("svg").selectAll("rect")
+    .data(dataset)
+    .join("rect")
+    .attr("width",(graphWidth/dataset.length) +1)
+    .attr("height", d => yScale(d))
+    .attr("x", (d, i) =>(i*(((graphWidth/dataset.length)))))
+    .attr("y", d => (graphHeight - yScale(d)))
+    .attr("fill","navy") 
+}
+
 
 function isOnScreen(x, y) {
   if ((x > canvasX && x < canvasX + canvasWidth)
@@ -293,10 +327,12 @@ function clickHandler(event) {
     let index = GameInstance.match(gameCoords, focusedInstance.state);
     {
       if (index) {
+        //console.log("removing:",gameCoords)
         focusedInstance.state.delete(gameCoords) //remove cell from list
-        focusedInstance.changes.add(gameCoords)
+        focusedInstance.changes.delete(gameCoords)
         focusedInstance.drawCells()
       } else {
+        //console.log("adding:",gameCoords)
         focusedInstance.state.add(gameCoords) //add cell to list
         focusedInstance.changes.add(gameCoords)
         focusedInstance.drawCells()

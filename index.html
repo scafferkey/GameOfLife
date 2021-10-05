@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <script src="scripts/d3.v7.min.js"></script>
     <meta charset="utf-8" />
     <title>Gamedev Canvas Workshop</title>
     <style>
     	* { padding: 0; margin: 0; }
     	canvas { background: #eee; display: block; margin: 0 auto; }
+        svg{background-color: black}
     </style>
 </head>
 <body>
@@ -21,13 +23,7 @@
     Furthest turn generated: <em id='turnsGenerated'>0</em>
     </p>
 </div>
-<script type="module">
 
-    import * as d3 from "https://cdn.skypack.dev/d3@7";
-    
-    const div = d3.selectAll("div");
-    
-    </script>
 <script src="scripts/gameOfLife.js"></script>
 
 </body>
