@@ -3,14 +3,22 @@
 <head>
     <script src="scripts/d3.v7.min.js"></script>
     <meta charset="utf-8" />
-    <title>Gamedev Canvas Workshop</title>
+    <title>Game of life</title>
     <style>
     	* { padding: 0; margin: 0; }
     	canvas { background: #eee; display: block; margin: 0 auto; }
-        svg{background-color: black}
+        svg{background-color: "white"}
     </style>
 </head>
 <body>
+    <p align="center">
+        Controls: <br>
+        Space or p - pause/resume <br>
+        ,/. - step back/forward by one tick <br>
+        Right arrow key/Left arrow key - increase/decrease running speed <br>
+        wasd - pan camera around <br>
+        q/e - zoom out/zoom in <br>
+    </p>
 <br>
 <canvas id="myCanvas" width="480" height="480"></canvas>
 <div align="center">
@@ -23,6 +31,7 @@
     Furthest turn generated: <em id='turnsGenerated'>0</em>
     </p>
 </div>
+<div align="center" class="graph"></div>
 
 <script src="scripts/gameOfLife.js"></script>
 
