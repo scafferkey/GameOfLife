@@ -217,8 +217,8 @@ class GameInstance {
 
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
-const width = (canvas.width = 800);//window.innerWidth
-const height = (canvas.height = 800);
+const width = (canvas.width = 500);//window.innerWidth
+const height = (canvas.height = 500);
 let pixelSize = 10;
 let xOffset = width / 2;
 let yOffset = height / 2;

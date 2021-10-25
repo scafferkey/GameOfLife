@@ -8,29 +8,66 @@
     	* { padding: 0; margin: 0; }
     	canvas { background: #eee; display: block; margin: 0 auto; }
         svg{background-color: "white"}
+        .container{
+            padding: 2%;
+            width: 96%;
+            background: LightGray;
+            display: grid;
+            grid-template-columns: 1fr 3fr 1fr;
+            grid-gap: 5%;
+        }
+        .inset{
+            padding: 5%;
+            background: DarkGray;
+            align-items: center;
+            border-radius: 10px 
+        }
+        h3{padding: 0.5em 0 0.5em 0;}
     </style>
 </head>
 <body>
-    <p align="center">
-        Controls: <br>
-        Space or p - pause/resume <br>
-        ,/. - step back/forward by one tick <br>
-        Right arrow key/Left arrow key - increase/decrease running speed <br>
-        wasd - pan camera around <br>
-        q/e - zoom out/zoom in <br>
+<div class="container">
+   <div class="inset">
+       <h1>Controls:</h1> 
+    <p>
+         <br>
+        <h3>Space or p </h3>
+        <br> 
+        Pause/resume 
+        <br>
+        <h3>,/.</h3>
+        <br>
+        Step back/forward by one tick.
+        <br>
+        <h3>Right arrow key/Left arrow key </h3> 
+        <br>
+        Increase/decrease running speed.
+        <br>
+        <h3>WASD</h3> 
+        <br>
+        Pan the camera around.
+        <br>
+        <h3>Q/E</h3> 
+        <br>
+        Zoom out/Zoom in.
+        <br>
     </p>
-<br>
+</div>
+<div class="inset">
 <canvas id="myCanvas" width="480" height="480"></canvas>
 <div align="center">
     <button id="pause" class="button">Pause/Resume</button>
     <button id="goto" class="button">Go to step:</button><input type="number" id='turnNumber' value="20">
 </div >
-    
-<div align="center">
+</div>
+
+
+<div class="inset">
     <p>Looking at turn: <em id='pointer'>0</em> <br>
     Furthest turn generated: <em id='turnsGenerated'>0</em>
     </p>
 </div>
+
 <div align="center" class="graph"></div>
 
 <script src="scripts/gameOfLife.js"></script>
