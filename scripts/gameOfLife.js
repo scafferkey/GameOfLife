@@ -274,31 +274,42 @@ let canvasHeight = canvas.getBoundingClientRect().height;
 const graphWidth = 400;
 const graphHeight = 400
 const padding = 10
-const svg = d3.select("body")
+const svg = d3.select(".graph")
     .append("svg")
     .attr("width",graphWidth)
     .attr("height",graphHeight)
+    
+svg.append("g")
+    .attr("transform","translate("+ 20 +", 0)")
 
 function updateGraph(dataset){
-  console.log("updateGraph being fired!")
-  console.log("dataset:",dataset)
+  // console.log("updateGraph being fired!")
+  // console.log("dataset:",dataset)
 //let dataset = focusedInstance.data  //[1,2,3,4,5,8,9,10,30,25,12]
 let max = d3.max(dataset)
 let yScale = d3.scaleLinear()
                .domain([0,d3.max(dataset)])
                .range([0,graphHeight - padding])
+
 let xScale = d3.scaleLinear()
                 .domain([1,dataset.length])
                 .range([padding,graphWidth -padding])
 
- d3.select("svg").selectAll("rect")
+let yAxis = d3.axisLeft(yScale)
+              .offset(1)
+              .tickValues(yScale.ticks(10))
+              console.log("yScale.ticks",yScale.ticks(10)) //need to use inverse y scale to avoid problems.
+              
+ svg.selectAll("rect")
     .data(dataset)
     .join("rect")
     .attr("width",(graphWidth/dataset.length) +1)
     .attr("height", d => yScale(d))
     .attr("x", (d, i) =>(i*(((graphWidth/dataset.length)))))
     .attr("y", d => (graphHeight - yScale(d)))
-    .attr("fill","navy") 
+    .attr("fill","#EEE") ;
+ svg.select("g")
+    .call(yAxis) //Deal
 }
 
 
