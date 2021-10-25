@@ -290,12 +290,14 @@ let max = d3.max(dataset)
 let yScale = d3.scaleLinear()
                .domain([0,d3.max(dataset)])
                .range([0,graphHeight - padding])
-
+let yAxisScale = d3.scaleLinear()
+                  .domain([0,d3.max(dataset)])
+                  .range([graphHeight - padding,0])
 let xScale = d3.scaleLinear()
                 .domain([1,dataset.length])
                 .range([padding,graphWidth -padding])
 
-let yAxis = d3.axisLeft(yScale)
+let yAxis = d3.axisLeft(yAxisScale)
               .offset(1)
               .tickValues(yScale.ticks(10))
               console.log("yScale.ticks",yScale.ticks(10)) //need to use inverse y scale to avoid problems.
