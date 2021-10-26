@@ -204,6 +204,7 @@ class GameInstance {
     if(this.paused) {
       drawPause(this.screen)
     }
+    if(this.history.length > 2) {updateGraph(this.data)}
   }
   tick() {
 
@@ -288,15 +289,16 @@ let canvasY = canvas.getBoundingClientRect().y;
 let canvasHeight = canvas.getBoundingClientRect().height;
 
 const graphWidth = 400;
-const graphHeight = 400
-const padding = 10
+const graphHeight = 400;
+const padding = 10;
+const axisPadding = 30;
 const svg = d3.select(".graph")
     .append("svg")
     .attr("width",graphWidth)
     .attr("height",graphHeight)
     
 svg.append("g")
-    .attr("transform","translate("+ 20 +", 0)")
+    .attr("transform","translate("+ axisPadding +", 0)")
 
 function updateGraph(dataset){
   // console.log("updateGraph being fired!")
@@ -311,7 +313,7 @@ let yAxisScale = d3.scaleLinear()
                   .range([graphHeight - padding,0])
 let xScale = d3.scaleLinear()
                 .domain([1,dataset.length])
-                .range([padding,graphWidth -padding])
+                .range([axisPadding + padding,graphWidth -padding])
 
 let yAxis = d3.axisLeft(yAxisScale)
               .offset(1)
@@ -321,11 +323,11 @@ let yAxis = d3.axisLeft(yAxisScale)
  svg.selectAll("rect")
     .data(dataset)
     .join("rect")
-    .attr("width",(graphWidth/dataset.length) +1)
+    .attr("width",((graphWidth-axisPadding)/dataset.length) +1)
     .attr("height", d => yScale(d))
-    .attr("x", (d, i) =>(i*(((graphWidth/dataset.length)))))
+    .attr("x", (d, i) =>xScale(i))//(i*(((graphWidth/dataset.length)))))
     .attr("y", d => (graphHeight - yScale(d)))
-    .attr("fill","#EEE") ;
+    .attr("fill",(d,i)=>i == focusedInstance.pointer+1 ? "#AAA":"#EEE") ;
  svg.select("g")
     .call(yAxis) //Deal
 }
