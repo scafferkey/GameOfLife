@@ -152,7 +152,7 @@ class GameInstance {
     // console.log("updated state:", nextState, "changes", changes)
     this.state = nextState;
     this.changes = changes;
-    this.drawCells(this.state);
+    this.drawState(this.state);
     this.history.push(this.state);
     this.data.push(this.state.size)
     updateGraph(this.data)
@@ -161,7 +161,7 @@ class GameInstance {
     
     if (turnNumber < this.history.length && turnNumber >= 0) {
       this.pointer = turnNumber
-      this.drawCells(this.history[this.pointer])
+      this.drawState(this.history[this.pointer])
     } else if (turnNumber >= this.history.length) {
       this.step();
       this.pointer++;
@@ -170,18 +170,18 @@ class GameInstance {
     }
     updateCounters()
   }
-  drawCells(drawState = null) {
-    if (drawState == null) {
+  drawState(targetState = null) {
+    if (targetState == null) {
       if (this.pointer < this.history.length - 1) {
-        drawState = (this.history[this.pointer]);
+        targetState = (this.history[this.pointer]);
       } else {
-        drawState = this.state;
+        targetState = this.state;
       }
     }
-    drawState = readCoordString(drawState)
+    targetState = readCoordString(targetState)
     this.screen.fillStyle = "rgba(50, 50, 50, 1)";
     this.screen.fillRect(0, 0, width, height);
-    for (let cell of drawState) {
+    for (let cell of targetState) {
 
       this.screen.beginPath();
       this.screen.rect(cell[0] * pixelSize + xOffset, cell[1] * pixelSize + yOffset, pixelSize - 1, pixelSize - 1);
@@ -194,7 +194,7 @@ class GameInstance {
 
     if (!this.paused) {
       if (this.pointer < this.history.length - 1) {
-        this.drawCells(this.history[this.pointer])
+        this.drawState(this.history[this.pointer])
       } else {
         this.step();
       }
@@ -246,7 +246,7 @@ let replicatorRule = { born: [1, 3, 5, 7], survive: [1, 3, 5, 7] }
 
 
 let focusedInstance = new GameInstance(rpent, ctx, standardGameRule);
-focusedInstance.drawCells();
+focusedInstance.drawState();
 
 const turnsGenerated = document.getElementById('turnsGenerated')
 const turnCounter = document.getElementById('pointer')
@@ -343,12 +343,12 @@ function clickHandler(event) {
         //console.log("removing:",gameCoords)
         focusedInstance.state.delete(gameCoords) //remove cell from list
         focusedInstance.changes.delete(gameCoords)
-        focusedInstance.drawCells()
+        focusedInstance.drawState()
       } else {
         //console.log("adding:",gameCoords)
         focusedInstance.state.add(gameCoords) //add cell to list
         focusedInstance.changes.add(gameCoords)
-        focusedInstance.drawCells()
+        focusedInstance.drawState()
       }
     }
   }
@@ -379,27 +379,27 @@ function keyUpHandler(e) {
       break;
     case "a":
       xOffset += panStep;
-      focusedInstance.drawCells();
+      focusedInstance.drawState();
       break;
     case "d":
       xOffset -= panStep;
-      focusedInstance.drawCells();
+      focusedInstance.drawState();
       break;
     case "w":
       yOffset += panStep;
-      focusedInstance.drawCells();
+      focusedInstance.drawState();
       break;
     case "s":
       yOffset -= panStep;
-      focusedInstance.drawCells();
+      focusedInstance.drawState();
       break;
     case "q":
       pixelSize = pixelSize <= 3 ? 3 : pixelSize - 1; //pixels seem to disappear below three - spacing issue?
-      focusedInstance.drawCells();
+      focusedInstance.drawState();
       break;
     case "e":
       pixelSize += 1;
-      focusedInstance.drawCells();
+      focusedInstance.drawState();
       break;
 
   }
