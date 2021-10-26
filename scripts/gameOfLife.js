@@ -178,9 +178,18 @@ class GameInstance {
         canvas.rect(cell[0] * pixelSize + xOffset, cell[1] * pixelSize + yOffset, pixelSize - 1, pixelSize - 1);
         canvas.fillStyle = "#EEEEEE";
         canvas.fill();
-        canvas.closePath();}
+        canvas.closePath();
       }
-    
+    }
+    function drawPause(canvas){
+      canvas.beginPath();
+      canvas.rect(width/3,height/3,width/9,height/3);
+      canvas.rect((5/9)*width,height/3,width/9,height/3);
+      canvas.fillStyle = "rgba(220, 220, 220, 0.2)"
+      canvas.fill();
+      canvas.closePath();
+
+    }
       if (targetState == null) {
       if (this.pointer < this.history.length - 1) {
         targetState = (this.history[this.pointer]);
@@ -192,7 +201,9 @@ class GameInstance {
     this.screen.fillStyle = "rgba(50, 50, 50, 1)";
     this.screen.fillRect(0, 0, width, height);
     drawCells(this.screen,targetState);
-
+    if(this.paused) {
+      drawPause(this.screen)
+    }
   }
   tick() {
 
@@ -209,6 +220,7 @@ class GameInstance {
   }
   pause_resume() {
     this.paused = !this.paused;
+    this.drawState()
   }
   timer() {
     this.tick()
