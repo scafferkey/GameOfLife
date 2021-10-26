@@ -171,7 +171,17 @@ class GameInstance {
     updateCounters()
   }
   drawState(targetState = null) {
-    if (targetState == null) {
+    function drawCells(canvas,targetState){
+      for (let cell of targetState) {
+  
+        canvas.beginPath();
+        canvas.rect(cell[0] * pixelSize + xOffset, cell[1] * pixelSize + yOffset, pixelSize - 1, pixelSize - 1);
+        canvas.fillStyle = "#EEEEEE";
+        canvas.fill();
+        canvas.closePath();}
+      }
+    
+      if (targetState == null) {
       if (this.pointer < this.history.length - 1) {
         targetState = (this.history[this.pointer]);
       } else {
@@ -181,14 +191,8 @@ class GameInstance {
     targetState = readCoordString(targetState)
     this.screen.fillStyle = "rgba(50, 50, 50, 1)";
     this.screen.fillRect(0, 0, width, height);
-    for (let cell of targetState) {
+    drawCells(this.screen,targetState);
 
-      this.screen.beginPath();
-      this.screen.rect(cell[0] * pixelSize + xOffset, cell[1] * pixelSize + yOffset, pixelSize - 1, pixelSize - 1);
-      this.screen.fillStyle = "#EEEEEE";
-      this.screen.fill();
-      this.screen.closePath();
-    }
   }
   tick() {
 
