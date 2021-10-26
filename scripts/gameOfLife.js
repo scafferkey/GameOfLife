@@ -251,32 +251,18 @@ let rpent = [[0, 1], [1, 0], [1, 1], [1, 2], [2, 2]];
 let block = [[0, 0], [0, 1], [1, 0], [1, 1]];
 let altpent = [[0, 1], [1, 1], [1, 0], [1, 2], [2, 2]]; //reordered rpent for fun test purposes. probably delete later
 let coordTest = [[0, 0], [1, 1], [-1, -1]];
-let startArray = [bPentomino,diehard,rpent]
 //rules
-let standardGameRule = {name:"Standard Game of Life", born: [3], survive: [2, 3] }
-let lifeWithoutDeathRule = {name:"Life without Death", born: [3], survive: [0, 1, 2, 3, 4, 5, 6, 7, 8] }
-let seedsRule = {name:"Seeds", born: [2], survive: [] }
-let twoByTwoRule = {name:"Two by Two", born: [3, 6], survive: [1, 2, 5] }
-let highLifeRule = {name:"High Life", born: [3, 6], survive: [2, 3] }
-let mazeRule = {name:"Maze", born: [3], survive: [1, 2, 3, 4, 5] }
-let mazectricRule = {name:"Mazectric", born: [3], survive: [1, 2, 3, 4] }
-let replicatorRule = {name:"Replicator", born: [1, 3, 5, 7], survive: [1, 3, 5, 7] }
-let ruleArray = [standardGameRule,lifeWithoutDeathRule,seedsRule,twoByTwoRule,highLifeRule,mazeRule,mazectricRule,replicatorRule]
+let standardGameRule = { born: [3], survive: [2, 3] }
+let lifeWithoutDeathRule = { born: [3], survive: [0, 1, 2, 3, 4, 5, 6, 7, 8] }
+let seedsRule = { born: [2], survive: [] }
+let twoByTwoRule = { born: [3, 6], survive: [1, 2, 5] }
+let highLifeRule = { born: [3, 6], survive: [2, 3] }
+let mazeRule = { born: [3], survive: [1, 2, 3, 4, 5] }
+let mazectricRule = { born: [3], survive: [1, 2, 3, 4] }
+let replicatorRule = { born: [1, 3, 5, 7], survive: [1, 3, 5, 7] }
 
-//building up selection lists
-let instanceOptionsDiv = document.getElementById('instancing');
-instanceOptionsDiv.style.background = 'blue';
-let startingRuleSelection = document.createElement('select');
-instanceOptionsDiv.append(startingRuleSelection);
-for(let rule of ruleArray){
-  let ruleOption = document.createElement('option')
-  ruleOption.value = rule.name;
-  ruleOption.innerHTML = rule.name;
-  startingRuleSelection.append(ruleOption)
-}
 
-let defaultInstance = new GameInstance(rpent, ctx, standardGameRule);
-let focusedInstance = defaultInstance;
+let focusedInstance = new GameInstance(rpent, ctx, standardGameRule);
 focusedInstance.drawState();
 
 const turnsGenerated = document.getElementById('turnsGenerated')
