@@ -7,7 +7,6 @@ CURRENT FEATURES:
 - Basically nothing else (this is a Minimum Viable Product)
 
 TODO:
-
 - Time controls: (DONE! needs some fine tuning for speed, mind)
     - Pausing and resuming
     - Incrementing backwards/forwards by a step (when paused)
@@ -24,15 +23,15 @@ TODO:
     - Zooming (Done!)
     - Tool to convert 0/1 matrices into coords for inserting into the game (DONE! needs testing, I guess?)
     - Allow drawing things directly onto the screen 
-        - Partly done - works, but allows directly editing the game in motion (not making a new seed, I guess?) and needs testing on larger canvass windows
+        - Partly done - works, but allows directly editing the game in motion (not making a new seed, I guess?) and needs testing on larger canvas windows
             - Testing on larger windows
             - Potential bonuses - draw lines by dragging
 - Automated tests:
     - Unit tests for functions! important!!
 Optimisation:
-    - Replace list with a map (or set might be better?)
-    - Track sleeping cells, etc.
-        - Clicked in cells must be added to awake list!
+    - Replace list with a map (or set might be better?) (Done!)
+    - Track sleeping cells, etc.(Done!)
+        - Clicked in cells must be added to awake list! (done!)
 - Data visualisation:
     - Tracking numbers of "alive" cells
     - Implement temperature and density
@@ -40,16 +39,17 @@ Optimisation:
     - Map onto the game state?
 
 - Discovery:
-    - Soup generation
+    - Soup generation (Done!)
     - Identifying unique shapes/configurations
-- Modular Rules
-    - Allow for different survive/born numbers
+- Modular Rules 
+    - Allow for different survive/born numbers (Done!)
     - Allow for different neighborhoods
-    - Different Tiling systems?
+
 - Saving/Exporting Game states
 - Library of interesting configurations
-- A prettier Webpage!
-
+- A prettier Webpage! (In progress!)
+BUGS:
+- Clicking gets translated by a bunch very often, need to fix coord system for it
 
 Really far off:
 Alternate tiling systems (Hexagonal, triangular)
