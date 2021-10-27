@@ -174,12 +174,15 @@ class GameInstance {
   drawState(targetState = null) {
     function drawCells(canvas,targetState){
       for (let cell of targetState) {
-  
+        let x = cell[0] * pixelSize + xOffset
+        let y = cell[1] * pixelSize + yOffset
+        if((x > -pixelSize && x < width)&&(y > -pixelSize && y < width)){
         canvas.beginPath();
-        canvas.rect(cell[0] * pixelSize + xOffset, cell[1] * pixelSize + yOffset, pixelSize - 1, pixelSize - 1);
+        canvas.rect(x, y, pixelSize - 1, pixelSize - 1);
         canvas.fillStyle = "#EEEEEE";
         canvas.fill();
         canvas.closePath();
+      }
       }
     }
     function drawPause(canvas){
@@ -388,7 +391,7 @@ let yAxis = d3.axisLeft(yAxisScale)
 }
 
 
-function isOnScreen(x, y) {
+function isOnCanvas(x, y) {
   if ((x > canvasX && x < canvasX + canvasWidth)
     && (y > canvasY && y < canvasY + canvasHeight)) {
     return true
@@ -406,7 +409,7 @@ function getGameCoords(x, y) {
 }
 
 function clickHandler(event) {
-  if (isOnScreen(event.layerX, event.layerY) && focusedInstance.pointer == focusedInstance.history.length - 1) {
+  if (isOnCanvas(event.layerX, event.layerY) && focusedInstance.pointer == focusedInstance.history.length - 1) {
     let gameCoords = makeStringCoord(...getGameCoords(event.layerX, event.layerY))
     //console.log("Game coords:",gameX,",",gameY)
     focusedInstance.paused = true;
