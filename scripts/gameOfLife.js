@@ -246,14 +246,10 @@ let panStep = width / 20;
 
 //starting configurations
 let standardSoup = GameInstance.generateSoup(50, 0.6)
-let bPentomino = {name: "B pentonimo", data: GameInstance.matrixToCoords([[1, 0, 1], [1, 0, 1], [1, 1, 1]])};
-let startState = [[0, 0], [0, 1], [1, 0], [1, 1], [0, 2]];
+let bHeptomino = {name: "B-heptonimo", data: GameInstance.matrixToCoords([[1, 0, 1,1], [1, 1, 1, 0], [0, 1, 0, 0]])};
 let diehard = {name: "diehard", data: [[0, 1], [1, 1], [1, 0], [5, 0], [6, 0], [7, 0], [6, 2],]};
-let rpent = {name: "R pentomino", data:[[0, 1], [1, 0], [1, 1], [1, 2], [2, 2]]};
-let block = [[0, 0], [0, 1], [1, 0], [1, 1]];
-let altpent = [[0, 1], [1, 1], [1, 0], [1, 2], [2, 2]]; //reordered rpent for fun test purposes. probably delete later
-let coordTest = [[0, 0], [1, 1], [-1, -1]];
-let startArray = [bPentomino,diehard,rpent]
+let rpent = {name: "r-pentomino", data:[[0, 1], [1, 0], [1, 1], [1, 2], [2, 2]]};
+let startArray = [rpent,bHeptomino,diehard]
 //rules
 
 let standardGameRule = {name:"Standard Game of Life", born: [3], survive: [2, 3] }
@@ -348,8 +344,8 @@ let canvasWidth = canvas.getBoundingClientRect().width;
 let canvasY = canvas.getBoundingClientRect().y;
 let canvasHeight = canvas.getBoundingClientRect().height;
 
-const graphWidth = 400;
-const graphHeight = 400;
+const graphWidth = 300;
+const graphHeight = 300;
 const padding = 10;
 const axisPadding = 30;
 const svg = d3.select(".graph")

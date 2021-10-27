@@ -14,7 +14,7 @@
             background: LightGray;
             display: grid;
             grid-template-columns: 1fr 3fr 1fr;
-            grid-gap: 5%;
+            grid-gap: 2%;
         }
         .inset{
             padding: 5%;
@@ -23,7 +23,7 @@
             border-radius: 10px 
         }
         .test{
-            background: red;
+            background: rgb(77, 76, 76);
             padding: 2px;
             border-radius: 5px;
         }
@@ -72,11 +72,12 @@
     Furthest turn generated: <em id='turnsGenerated'>0</em>
     </p>
     <div id="instancing" class="test">
-        <p>Rule Selector (Broken)</p>
+        <p>New Game Options:</p>
     </div>
+    <div class="graph"></div>
 </div>
 
-<div align="center" class="graph"></div>
+<div class="graph"></div>
 
 <script src="scripts/gameOfLife.js"></script>
 
