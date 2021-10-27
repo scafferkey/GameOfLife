@@ -245,10 +245,10 @@ let panStep = width / 20;
 
 //starting configurations
 let standardSoup = GameInstance.generateSoup(50, 0.6)
-let bPentomino = GameInstance.matrixToCoords([[1, 0, 1], [1, 0, 1], [1, 1, 1]]);
+let bPentomino = {name: "B pentonimo", data: GameInstance.matrixToCoords([[1, 0, 1], [1, 0, 1], [1, 1, 1]])};
 let startState = [[0, 0], [0, 1], [1, 0], [1, 1], [0, 2]];
-let diehard = [[0, 1], [1, 1], [1, 0], [5, 0], [6, 0], [7, 0], [6, 2],];
-let rpent = [[0, 1], [1, 0], [1, 1], [1, 2], [2, 2]];
+let diehard = {name: "diehard", data: [[0, 1], [1, 1], [1, 0], [5, 0], [6, 0], [7, 0], [6, 2],]};
+let rpent = {name: "R pentomino", data:[[0, 1], [1, 0], [1, 1], [1, 2], [2, 2]]};
 let block = [[0, 0], [0, 1], [1, 0], [1, 1]];
 let altpent = [[0, 1], [1, 1], [1, 0], [1, 2], [2, 2]]; //reordered rpent for fun test purposes. probably delete later
 let coordTest = [[0, 0], [1, 1], [-1, -1]];
@@ -268,6 +268,7 @@ let ruleArray = [standardGameRule,lifeWithoutDeathRule,seedsRule,twoByTwoRule,hi
 //building up selection lists
 let instanceOptionsDiv = document.getElementById('instancing');
 instanceOptionsDiv.style.background = 'blue';
+
 let startingRuleSelection = document.createElement('select');
 instanceOptionsDiv.append(startingRuleSelection);
 for(let rule of ruleArray){
@@ -276,8 +277,23 @@ for(let rule of ruleArray){
   ruleOption.innerHTML = rule.name;
   startingRuleSelection.append(ruleOption)
 }
+let startingConfigSelection = document.createElement('select');
+instanceOptionsDiv.append(startingConfigSelection);
+for(let config of startArray){
+  let configOption = document.createElement('option')
+  configOption.value = config.name;
+  configOption.innerHTML = config.name;
+  startingConfigSelection.append(configOption)
+}
+let newInstanceButton = document.createElement('button')
+newInstanceButton.innerHTML='New config'
+instanceOptionsDiv.append(newInstanceButton)
+newInstanceButton.onclick = function() {
+  console.log("Selected rule:",startingRuleSelection.options[startingRuleSelection.selectedIndex].value)
+  console.log("Selected configuration:",startingConfigSelection.options[startingConfigSelection.selectedIndex].value)
+}
 
-let defaultInstance = new GameInstance(rpent, ctx, standardGameRule);
+let defaultInstance = new GameInstance(rpent.data, ctx, standardGameRule);
 let focusedInstance = defaultInstance;
 focusedInstance.drawState();
 
