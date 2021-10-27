@@ -186,7 +186,7 @@ class GameInstance {
       canvas.beginPath();
       canvas.rect(width/3,height/3,width/9,height/3);
       canvas.rect((5/9)*width,height/3,width/9,height/3);
-      canvas.fillStyle = "rgba(220, 220, 220, 0.2)"
+      canvas.fillStyle = "rgba(220, 100, 100, 0.4)"
       canvas.fill();
       canvas.closePath();
 
@@ -290,8 +290,6 @@ let newInstanceButton = document.createElement('button')
 newInstanceButton.innerHTML='New config'
 instanceOptionsDiv.append(newInstanceButton)
 newInstanceButton.onclick = function() {
-  console.log("Selected rule:",startingRuleSelection.options[startingRuleSelection.selectedIndex].value)
-  console.log("Selected configuration:",startingConfigSelection.options[startingConfigSelection.selectedIndex].value)
   console.log("Selected rule:",startingRuleSelection.options[startingRuleSelection.selectedIndex].value);
   let selectedRule = startingRuleSelection.options[startingRuleSelection.selectedIndex].value;
   let ruleObj;
