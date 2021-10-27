@@ -363,7 +363,7 @@ function updateGraph(dataset){
 let max = d3.max(dataset)
 let yScale = d3.scaleLinear()
                .domain([0,d3.max(dataset)])
-               .range([padding,graphHeight - padding])
+               .range([0,graphHeight - 2* padding])
 let yAxisScale = d3.scaleLinear()
                   .domain([0,d3.max(dataset)])
                   .range([graphHeight - padding,padding])
@@ -371,8 +371,7 @@ let xScale = d3.scaleLinear()
                 .domain([0,(dataset.length - 1)+ 1 ]) //+1 leaves room for final bar at the end
                 .range([axisPadding+5,graphWidth -padding])
 
-let yAxis = d3.axisLeft(yAxisScale)
-              .offset(1)
+let yAxis = d3.axisLeft(yAxisScale)              
               .tickValues(yScale.ticks(10))
               //console.log("yScale.ticks",yScale.ticks(10)) //need to use inverse y scale to avoid problems.
               
@@ -382,7 +381,7 @@ let yAxis = d3.axisLeft(yAxisScale)
     .attr("width",(xScale(1)-xScale(0))+1)//(((graphWidth-(axisPadding+2*padding))/dataset.length) +1))
     .attr("height", d => yScale(d))
     .attr("x", (d, i) =>xScale(i))//(i*(((graphWidth/dataset.length)))))
-    .attr("y", d => (graphHeight - yScale(d)))
+    .attr("y", d => (graphHeight - padding - yScale(d)))
     .attr("fill",(d,i)=>i == focusedInstance.pointer ? "#FFF":"#EEE") ;
  svg.select("g")
     .call(yAxis) //Deal
