@@ -368,8 +368,8 @@ let yAxisScale = d3.scaleLinear()
                   .domain([0,d3.max(dataset)])
                   .range([graphHeight - padding,padding])
 let xScale = d3.scaleLinear()
-                .domain([1,dataset.length])
-                .range([axisPadding + padding,graphWidth -padding])
+                .domain([0,(dataset.length - 1)+ 1 ]) //+1 leaves room for final bar at the end
+                .range([axisPadding+5,graphWidth -padding])
 
 let yAxis = d3.axisLeft(yAxisScale)
               .offset(1)
@@ -379,11 +379,11 @@ let yAxis = d3.axisLeft(yAxisScale)
  svg.selectAll("rect")
     .data(dataset)
     .join("rect")
-    .attr("width",((graphWidth-axisPadding)/dataset.length) +1)
+    .attr("width",(xScale(1)-xScale(0))+1)//(((graphWidth-(axisPadding+2*padding))/dataset.length) +1))
     .attr("height", d => yScale(d))
     .attr("x", (d, i) =>xScale(i))//(i*(((graphWidth/dataset.length)))))
     .attr("y", d => (graphHeight - yScale(d)))
-    .attr("fill",(d,i)=>i == focusedInstance.pointer ? "#AAA":"#EEE") ;
+    .attr("fill",(d,i)=>i == focusedInstance.pointer ? "#FFF":"#EEE") ;
  svg.select("g")
     .call(yAxis) //Deal
 }
