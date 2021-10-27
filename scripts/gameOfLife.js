@@ -155,7 +155,7 @@ class GameInstance {
     this.drawState(this.state);
     this.history.push(this.state);
     this.data.push(this.state.size)
-    updateGraph(this.data)
+    
   }
   goTo(turnNumber) {
     
@@ -215,6 +215,7 @@ class GameInstance {
         this.step();
       }
       this.pointer++;
+      updateGraph(this.data)
       //console.log(pointer)
       updateCounters();
     }
@@ -253,6 +254,7 @@ let altpent = [[0, 1], [1, 1], [1, 0], [1, 2], [2, 2]]; //reordered rpent for fu
 let coordTest = [[0, 0], [1, 1], [-1, -1]];
 let startArray = [bPentomino,diehard,rpent]
 //rules
+
 let standardGameRule = {name:"Standard Game of Life", born: [3], survive: [2, 3] }
 let lifeWithoutDeathRule = {name:"Life without Death", born: [3], survive: [0, 1, 2, 3, 4, 5, 6, 7, 8] }
 let seedsRule = {name:"Seeds", born: [2], survive: [] }
@@ -332,7 +334,7 @@ let xScale = d3.scaleLinear()
 let yAxis = d3.axisLeft(yAxisScale)
               .offset(1)
               .tickValues(yScale.ticks(10))
-              console.log("yScale.ticks",yScale.ticks(10)) //need to use inverse y scale to avoid problems.
+              //console.log("yScale.ticks",yScale.ticks(10)) //need to use inverse y scale to avoid problems.
               
  svg.selectAll("rect")
     .data(dataset)
@@ -341,7 +343,7 @@ let yAxis = d3.axisLeft(yAxisScale)
     .attr("height", d => yScale(d))
     .attr("x", (d, i) =>xScale(i))//(i*(((graphWidth/dataset.length)))))
     .attr("y", d => (graphHeight - yScale(d)))
-    .attr("fill",(d,i)=>i == focusedInstance.pointer+1 ? "#AAA":"#EEE") ;
+    .attr("fill",(d,i)=>i == focusedInstance.pointer ? "#AAA":"#EEE") ;
  svg.select("g")
     .call(yAxis) //Deal
 }
@@ -433,6 +435,8 @@ function keyUpHandler(e) {
       pixelSize += 1;
       focusedInstance.drawState();
       break;
+    case "z":
+      console.log(focusedInstance.pointer,focusedInstance.history.length)
 
   }
 
