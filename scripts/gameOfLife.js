@@ -143,8 +143,8 @@ class GameInstance {
     }
     // at this level, all variables should be string coords
     let eligibleList = getEligible(this.changes);
-    let sleepingCells = difference(this.state, eligibleList)
-    let [nextState, changes] = getNextState(eligibleList, this.state, sleepingCells, this.rule);
+    let sleepingList = difference(this.state, eligibleList)
+    let [nextState, changes] = getNextState(eligibleList, this.state, sleepingList, this.rule);
     this.state = nextState;
     this.changes = changes;
     this.drawState(this.state);
