@@ -286,6 +286,8 @@ for(let config of startArray){
   configOption.innerHTML = config.name;
   startingConfigSelection.append(configOption)
 }
+let linebreak = document.createElement('br')
+instanceOptionsDiv.append(linebreak);
 let newInstanceButton = document.createElement('button')
 newInstanceButton.innerHTML='New config'
 instanceOptionsDiv.append(newInstanceButton)
