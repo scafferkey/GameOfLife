@@ -267,7 +267,6 @@ let ruleArray = [standardGameRule,lifeWithoutDeathRule,seedsRule,twoByTwoRule,hi
 
 //building up selection lists
 let instanceOptionsDiv = document.getElementById('instancing');
-instanceOptionsDiv.style.background = 'blue';
 
 let startingRuleSelection = document.createElement('select');
 instanceOptionsDiv.append(startingRuleSelection);
