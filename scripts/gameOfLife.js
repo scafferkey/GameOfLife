@@ -55,7 +55,7 @@ class GameInstance {
     this.tick()
     setTimeout(() => this.timer(), interval / focusedInstance.speed.value);
   }
-  step(rule = this.rule) {
+  step() {
     function getEligible(list, xRange = 1, yRange = 1) {
       // list needs to be a numeric coordinate or converted into one
       let convList = readCoordString(list)
@@ -148,7 +148,7 @@ class GameInstance {
     let sleepingCells = difference(currentState, eligibleList)
     // console.log("sleeping Cells:", sleepingCells)
     // console.log("eligibile", eligibleList)
-    let [nextState, changes] = getNextState(eligibleList, currentState, sleepingCells, rule);
+    let [nextState, changes] = getNextState(eligibleList, currentState, sleepingCells, this.rule);
     // console.log("updated state:", nextState, "changes", changes)
     this.state = nextState;
     this.changes = changes;
