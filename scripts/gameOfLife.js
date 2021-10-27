@@ -7,7 +7,7 @@ window.onload = function () {
 
 
 class GameInstance {
-  constructor(seedState, screen, rule = standardGameObj) {
+  constructor(seedState, screen, rule = standardGameRule) {
     this.seed = writeCoordString(seedState);
     this.state = new Set(this.seed);
     this.history = [this.state,]
@@ -292,6 +292,33 @@ instanceOptionsDiv.append(newInstanceButton)
 newInstanceButton.onclick = function() {
   console.log("Selected rule:",startingRuleSelection.options[startingRuleSelection.selectedIndex].value)
   console.log("Selected configuration:",startingConfigSelection.options[startingConfigSelection.selectedIndex].value)
+  console.log("Selected rule:",startingRuleSelection.options[startingRuleSelection.selectedIndex].value);
+  let selectedRule = startingRuleSelection.options[startingRuleSelection.selectedIndex].value;
+  let ruleObj;
+  for(let rule of ruleArray){
+    //console.log(`Testing! is ${rule.name} equal to ${selectedRule}? Answer: ${rule.name == selectedRule}`)
+    if(rule.name == selectedRule){
+      
+      ruleObj = rule;
+      break;
+    }
+  }
+  //console.log("Selected configuration:",startingConfigSelection.options[startingConfigSelection.selectedIndex].value);
+  let selectedConfig = startingConfigSelection.options[startingConfigSelection.selectedIndex].value;
+  let configData;
+  for(let configObj of startArray){
+    if(configObj.name == selectedConfig){
+      configData = configObj.data;
+      break;
+    }
+  }
+  console.log("rule object:",ruleObj)
+  //shut down old instance for a while
+  focusedInstance.paused = true;
+  let newInstance = new GameInstance(configData,ctx,ruleObj);
+  focusedInstance = newInstance;
+  focusedInstance.drawState()
+  focusedInstance.timer()
 }
 
 let defaultInstance = new GameInstance(rpent.data, ctx, standardGameRule);
