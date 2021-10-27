@@ -168,6 +168,7 @@ class GameInstance {
     } else {
       //alert("Illegal jump attempted! \nPointer:",point)
     }
+    updateGraph(this.data)
     updateCounters()
   }
   drawState(targetState = null) {
