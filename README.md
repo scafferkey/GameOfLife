@@ -53,6 +53,6 @@ Optimisation:
 - A prettier Webpage! (In progress!)
 BUGS:
 - Clicking gets translated by a bunch very often, need to fix coord system for it
-
+- Graph axes can be floating point (fix formatting)
 Really far off:
 Alternate tiling systems (Hexagonal, triangular)
