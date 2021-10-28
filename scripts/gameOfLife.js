@@ -312,11 +312,13 @@ newInstanceButton.onclick = function() {
   focusedInstance = newInstance;
   focusedInstance.drawState()
   focusedInstance.timer()
+  updateGraph(focusedInstance.data)
 }
 
 let defaultInstance = new GameInstance(rpent.data, ctx, standardGameRule);
 let focusedInstance = defaultInstance;
 focusedInstance.drawState();
+
 
 const turnsGenerated = document.getElementById('turnsGenerated')
 const turnCounter = document.getElementById('pointer')
@@ -352,6 +354,8 @@ const svg = d3.select(".graph")
     
 svg.append("g")
     .attr("transform","translate("+ axisPadding +", 0)")
+
+updateGraph(focusedInstance.data)
 
 function updateGraph(dataset){
   // console.log("updateGraph being fired!")
