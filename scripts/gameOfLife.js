@@ -203,7 +203,7 @@ class GameInstance {
     if(this.paused) {
       drawPause(this.screen)
     }
-    if(this.history.length > 2) {updateGraph(this.data)}
+    
   }
   tick() {
 
