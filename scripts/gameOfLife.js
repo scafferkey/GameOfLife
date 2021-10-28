@@ -422,11 +422,15 @@ function clickHandler(event) {
         //console.log("removing:",gameCoords)
         focusedInstance.state.delete(gameCoords) //remove cell from list
         focusedInstance.changes.add(gameCoords) //hold on, this can't be right
+        focusedInstance.data[focusedInstance.pointer] -= 1;
+        updateGraph(focusedInstance.data);
         focusedInstance.drawState()
       } else {
         //console.log("adding:",gameCoords)
         focusedInstance.state.add(gameCoords) //add cell to list
         focusedInstance.changes.add(gameCoords)
+        focusedInstance.data[focusedInstance.pointer] += 1;
+        updateGraph(focusedInstance.data);
         focusedInstance.drawState()
       }
     }
