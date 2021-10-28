@@ -205,7 +205,7 @@ class GameInstance {
     }
     if (this.pointer < this.history.length - 1){
       this.screen.lineWidth = 5;
-      this.screen.strokeStyle = "rgba(220, 100, 100, 0.4)";
+      this.screen.strokeStyle = "rgba(220, 100, 100, 0.6)";
       this.screen.strokeRect(5, 5, width-10, height-10);
 
     }
