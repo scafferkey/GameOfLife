@@ -482,9 +482,9 @@ function keyUpHandler(e) {
       focusedInstance.drawState();
       break;
     case "z":
-      console.log("pointer, history.length", focusedInstance.pointer, focusedInstance.history.length)
+      /* console.log("pointer, history.length", focusedInstance.pointer, focusedInstance.history.length)
       console.log("state, typeof(state)", focusedInstance.state, typeof (focusedInstance.state))
-      console.log("changes", focusedInstance.changes)
+      console.log("changes", focusedInstance.changes) */
   }
 
 }
