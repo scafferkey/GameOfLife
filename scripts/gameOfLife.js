@@ -416,13 +416,14 @@ function clickHandler(event) {
     let gameCoords = makeStringCoord(...getGameCoords(event.layerX, event.layerY))
     //console.log("Game coords:",gameX,",",gameY)
     focusedInstance.paused = true;
-    let index = GameInstance.match(gameCoords, focusedInstance.state);
     {
-      if (index) {
-        //console.log("removing:",gameCoords)
+      if (GameInstance.match(gameCoords, focusedInstance.state)) {
+        console.log("before:",focusedInstance.state)
+        console.log("removing:",gameCoords)
         focusedInstance.state.delete(gameCoords) //remove cell from list
-        focusedInstance.changes.add(gameCoords) //hold on, this can't be right
+        focusedInstance.changes.add(gameCoords) 
         focusedInstance.data[focusedInstance.pointer] -= 1;
+        console.log("after:",focusedInstance.state)
         updateGraph(focusedInstance.data);
         focusedInstance.drawState()
       } else {
