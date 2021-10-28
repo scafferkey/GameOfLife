@@ -421,7 +421,7 @@ function clickHandler(event) {
       if (index) {
         //console.log("removing:",gameCoords)
         focusedInstance.state.delete(gameCoords) //remove cell from list
-        focusedInstance.changes.delete(gameCoords)
+        focusedInstance.changes.add(gameCoords) //hold on, this can't be right
         focusedInstance.drawState()
       } else {
         //console.log("adding:",gameCoords)
