@@ -10,14 +10,14 @@ class GameInstance {
   constructor(seedState, screen, rule = standardGameRule) {
     this.seed = writeCoordString(seedState);
     this.state = new Set(this.seed);
-    this.history = [this.state,]
+    this.history = [this.state,];
     this.changes = new Set(this.seed);
     this.pointer = 0;
-    this.speed = { "value": 10, "max": 30, "min": 1 }
-    this.paused = true; 
+    this.speed = { "value": 10, "max": 30, "min": 1 };
+    this.paused = true;
     this.screen = screen;
     this.rule = rule;
-    this.data = [this.state.size,]
+    this.data = [this.state.size,];
   }
   static matrixToCoords(matrix) {
     let output = [];
@@ -152,7 +152,7 @@ class GameInstance {
     this.data.push(this.state.size)
   }
   goTo(turnNumber) {
-    
+
     if (turnNumber < this.history.length && turnNumber >= 0) {
       this.pointer = turnNumber
       this.drawState(this.history[this.pointer])
@@ -166,29 +166,29 @@ class GameInstance {
     updateCounters()
   }
   drawState(targetState = null) {
-    function drawCells(canvas,targetState){
+    function drawCells(canvas, targetState) {
       for (let cell of targetState) {
         let x = cell[0] * pixelSize + xOffset
         let y = cell[1] * pixelSize + yOffset
-        if((x > -pixelSize && x < width)&&(y > -pixelSize && y < width)){
-        canvas.beginPath();
-        canvas.rect(x, y, pixelSize - 1, pixelSize - 1);
-        canvas.fillStyle = "#EEEEEE";
-        canvas.fill();
-        canvas.closePath();
-      }
+        if ((x > -pixelSize && x < width) && (y > -pixelSize && y < width)) {
+          canvas.beginPath();
+          canvas.rect(x, y, pixelSize - 1, pixelSize - 1);
+          canvas.fillStyle = "#EEEEEE";
+          canvas.fill();
+          canvas.closePath();
+        }
       }
     }
-    function drawPause(canvas){
+    function drawPause(canvas) {
       canvas.beginPath();
-      canvas.rect(width/3,height/3,width/9,height/3);
-      canvas.rect((5/9)*width,height/3,width/9,height/3);
+      canvas.rect(width / 3, height / 3, width / 9, height / 3);
+      canvas.rect((5 / 9) * width, height / 3, width / 9, height / 3);
       canvas.fillStyle = "rgba(220, 100, 100, 0.4)"
       canvas.fill();
       canvas.closePath();
 
     }
-      if (targetState == null) {
+    if (targetState == null) {
       if (this.pointer < this.history.length - 1) {
         targetState = (this.history[this.pointer]);
       } else {
@@ -198,14 +198,14 @@ class GameInstance {
     targetState = readCoordString(targetState)
     this.screen.fillStyle = "rgba(50, 50, 50, 1)";
     this.screen.fillRect(0, 0, width, height);
-    drawCells(this.screen,targetState);
-    if(this.paused) {
+    drawCells(this.screen, targetState);
+    if (this.paused) {
       drawPause(this.screen)
     }
-    if (this.pointer < this.history.length - 1){
+    if (this.pointer < this.history.length - 1) {
       this.screen.lineWidth = 5;
       this.screen.strokeStyle = "rgba(220, 100, 100, 0.6)";
-      this.screen.strokeRect(5, 5, width-10, height-10);
+      this.screen.strokeRect(5, 5, width - 10, height - 10);
 
     }
   }
@@ -233,10 +233,10 @@ class GameInstance {
   }
   toggleCell(stringCoord) {
 
-    if(this.state.has(stringCoord)){
+    if (this.state.has(stringCoord)) {
       this.state.delete(stringCoord)
       this.data[this.pointer] -= 1
-    }else{
+    } else {
       this.state.add(stringCoord)
       this.data[this.pointer] += 1
     }
@@ -260,28 +260,28 @@ let panStep = width / 20;
 
 //starting configurations
 let standardSoup = GameInstance.generateSoup(50, 0.6)
-let bHeptomino = {name: "B-heptonimo", data: GameInstance.matrixToCoords([[1, 0, 1,1], [1, 1, 1, 0], [0, 1, 0, 0]])};
-let diehard = {name: "diehard", data: [[0, 1], [1, 1], [1, 0], [5, 0], [6, 0], [7, 0], [6, 2],]};
-let rpent = {name: "r-pentomino", data:[[0, 1], [1, 0], [1, 1], [1, 2], [2, 2]]};
-let startArray = [rpent,bHeptomino,diehard]
+let bHeptomino = { name: "B-heptonimo", data: GameInstance.matrixToCoords([[1, 0, 1, 1], [1, 1, 1, 0], [0, 1, 0, 0]]) };
+let diehard = { name: "diehard", data: [[0, 1], [1, 1], [1, 0], [5, 0], [6, 0], [7, 0], [6, 2],] };
+let rpent = { name: "r-pentomino", data: [[0, 1], [1, 0], [1, 1], [1, 2], [2, 2]] };
+let startArray = [rpent, bHeptomino, diehard]
 //rules
 
-let standardGameRule = {name:"Standard Game of Life", born: [3], survive: [2, 3] }
-let lifeWithoutDeathRule = {name:"Life without Death", born: [3], survive: [0, 1, 2, 3, 4, 5, 6, 7, 8] }
-let seedsRule = {name:"Seeds", born: [2], survive: [] }
-let twoByTwoRule = {name:"Two by Two", born: [3, 6], survive: [1, 2, 5] }
-let highLifeRule = {name:"High Life", born: [3, 6], survive: [2, 3] }
-let mazeRule = {name:"Maze", born: [3], survive: [1, 2, 3, 4, 5] }
-let mazectricRule = {name:"Mazectric", born: [3], survive: [1, 2, 3, 4] }
-let replicatorRule = {name:"Replicator", born: [1, 3, 5, 7], survive: [1, 3, 5, 7] }
-let ruleArray = [standardGameRule,lifeWithoutDeathRule,seedsRule,twoByTwoRule,highLifeRule,mazeRule,mazectricRule,replicatorRule]
+let standardGameRule = { name: "Standard Game of Life", born: [3], survive: [2, 3] }
+let lifeWithoutDeathRule = { name: "Life without Death", born: [3], survive: [0, 1, 2, 3, 4, 5, 6, 7, 8] }
+let seedsRule = { name: "Seeds", born: [2], survive: [] }
+let twoByTwoRule = { name: "Two by Two", born: [3, 6], survive: [1, 2, 5] }
+let highLifeRule = { name: "High Life", born: [3, 6], survive: [2, 3] }
+let mazeRule = { name: "Maze", born: [3], survive: [1, 2, 3, 4, 5] }
+let mazectricRule = { name: "Mazectric", born: [3], survive: [1, 2, 3, 4] }
+let replicatorRule = { name: "Replicator", born: [1, 3, 5, 7], survive: [1, 3, 5, 7] }
+let ruleArray = [standardGameRule, lifeWithoutDeathRule, seedsRule, twoByTwoRule, highLifeRule, mazeRule, mazectricRule, replicatorRule]
 
 //building up selection lists
 let instanceOptionsDiv = document.getElementById('instancing');
 
 let startingRuleSelection = document.createElement('select');
 instanceOptionsDiv.append(startingRuleSelection);
-for(let rule of ruleArray){
+for (let rule of ruleArray) {
   let ruleOption = document.createElement('option')
   ruleOption.value = rule.name;
   ruleOption.innerHTML = rule.name;
@@ -289,7 +289,7 @@ for(let rule of ruleArray){
 }
 let startingConfigSelection = document.createElement('select');
 instanceOptionsDiv.append(startingConfigSelection);
-for(let config of startArray){
+for (let config of startArray) {
   let configOption = document.createElement('option')
   configOption.value = config.name;
   configOption.innerHTML = config.name;
@@ -298,16 +298,16 @@ for(let config of startArray){
 let linebreak = document.createElement('br')
 instanceOptionsDiv.append(linebreak);
 let newInstanceButton = document.createElement('button')
-newInstanceButton.innerHTML='New config'
+newInstanceButton.innerHTML = 'New config'
 instanceOptionsDiv.append(newInstanceButton)
-newInstanceButton.onclick = function() {
+newInstanceButton.onclick = function () {
   //console.log("Selected rule:",startingRuleSelection.options[startingRuleSelection.selectedIndex].value);
   let selectedRule = startingRuleSelection.options[startingRuleSelection.selectedIndex].value;
   let ruleObj;
-  for(let rule of ruleArray){
+  for (let rule of ruleArray) {
     //console.log(`Testing! is ${rule.name} equal to ${selectedRule}? Answer: ${rule.name == selectedRule}`)
-    if(rule.name == selectedRule){
-      
+    if (rule.name == selectedRule) {
+
       ruleObj = rule;
       break;
     }
@@ -315,8 +315,8 @@ newInstanceButton.onclick = function() {
   //console.log("Selected configuration:",startingConfigSelection.options[startingConfigSelection.selectedIndex].value);
   let selectedConfig = startingConfigSelection.options[startingConfigSelection.selectedIndex].value;
   let configData;
-  for(let configObj of startArray){
-    if(configObj.name == selectedConfig){
+  for (let configObj of startArray) {
+    if (configObj.name == selectedConfig) {
       configData = configObj.data;
       break;
     }
@@ -324,7 +324,7 @@ newInstanceButton.onclick = function() {
   //console.log("rule object:",ruleObj)
   //shut down old instance for a while
   focusedInstance.paused = true;
-  let newInstance = new GameInstance(configData,ctx,ruleObj);
+  let newInstance = new GameInstance(configData, ctx, ruleObj);
   focusedInstance = newInstance;
   focusedInstance.drawState()
   focusedInstance.timer()
@@ -364,43 +364,43 @@ const graphHeight = 300;
 const padding = 10;
 const axisPadding = 30;
 const svg = d3.select(".graph")
-    .append("svg")
-    .attr("width",graphWidth)
-    .attr("height",graphHeight)
-    
+  .append("svg")
+  .attr("width", graphWidth)
+  .attr("height", graphHeight)
+
 svg.append("g")
-    .attr("transform","translate("+ axisPadding +", 0)")
+  .attr("transform", "translate(" + axisPadding + ", 0)")
 
 updateGraph(focusedInstance.data)
 
-function updateGraph(dataset){
+function updateGraph(dataset) {
   // console.log("updateGraph being fired!")
   // console.log("dataset:",dataset)
-//let dataset = focusedInstance.data  //[1,2,3,4,5,8,9,10,30,25,12]
-let max = d3.max(dataset)
-let yScale = d3.scaleLinear()
-               .domain([0,d3.max(dataset)])
-               .range([0,graphHeight - 2* padding])
-let yAxisScale = d3.scaleLinear()
-                  .domain([0,d3.max(dataset)])
-                  .range([graphHeight - padding,padding])
-let xScale = d3.scaleLinear()
-                .domain([0,(dataset.length - 1)+ 1 ]) //+1 leaves room for final bar at the end
-                .range([axisPadding+5,graphWidth -padding])
+  //let dataset = focusedInstance.data  //[1,2,3,4,5,8,9,10,30,25,12]
+  let max = d3.max(dataset)
+  let yScale = d3.scaleLinear()
+    .domain([0, d3.max(dataset)])
+    .range([0, graphHeight - 2 * padding])
+  let yAxisScale = d3.scaleLinear()
+    .domain([0, d3.max(dataset)])
+    .range([graphHeight - padding, padding])
+  let xScale = d3.scaleLinear()
+    .domain([0, (dataset.length - 1) + 1]) //+1 leaves room for final bar at the end
+    .range([axisPadding + 5, graphWidth - padding])
 
-let yAxis = d3.axisLeft(yAxisScale)              
-              .tickValues(yScale.ticks(10))
-              //console.log("yScale.ticks",yScale.ticks(10)) //need to use inverse y scale to avoid problems.
-              
- svg.selectAll("rect")
+  let yAxis = d3.axisLeft(yAxisScale)
+    .tickValues(yScale.ticks(10))
+  //console.log("yScale.ticks",yScale.ticks(10)) //need to use inverse y scale to avoid problems.
+
+  svg.selectAll("rect")
     .data(dataset)
     .join("rect")
-    .attr("width",(xScale(1)-xScale(0))+1)//(((graphWidth-(axisPadding+2*padding))/dataset.length) +1))
+    .attr("width", (xScale(1) - xScale(0)) + 1)//(((graphWidth-(axisPadding+2*padding))/dataset.length) +1))
     .attr("height", d => yScale(d))
-    .attr("x", (d, i) =>xScale(i))//(i*(((graphWidth/dataset.length)))))
+    .attr("x", (d, i) => xScale(i))//(i*(((graphWidth/dataset.length)))))
     .attr("y", d => (graphHeight - padding - yScale(d)))
-    .attr("fill",(d,i)=>i == focusedInstance.pointer ? "#FFF":"#EEE") ;
- svg.select("g")
+    .attr("fill", (d, i) => i == focusedInstance.pointer ? "#FFF" : "#EEE");
+  svg.select("g")
     .call(yAxis) //Deal
 }
 
@@ -480,9 +480,9 @@ function keyUpHandler(e) {
       focusedInstance.drawState();
       break;
     case "z":
-      console.log("pointer, history.length",focusedInstance.pointer,focusedInstance.history.length)
-      console.log("state, typeof(state)",focusedInstance.state, typeof(focusedInstance.state))
-      console.log("changes",focusedInstance.changes)
+      console.log("pointer, history.length", focusedInstance.pointer, focusedInstance.history.length)
+      console.log("state, typeof(state)", focusedInstance.state, typeof (focusedInstance.state))
+      console.log("changes", focusedInstance.changes)
   }
 
 }
