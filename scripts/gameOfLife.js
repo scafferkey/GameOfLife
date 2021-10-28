@@ -11,7 +11,7 @@ class GameInstance {
     this.seed = writeCoordString(seedState);
     this.state = new Set(this.seed);
     this.history = [this.state,]
-    this.changes = this.state;
+    this.changes = new Set(this.seed);
     this.pointer = 0;
     this.speed = { "value": 10, "max": 30, "min": 1 }
     this.paused = true; 
@@ -150,7 +150,6 @@ class GameInstance {
     this.drawState(this.state);
     this.history.push(this.state);
     this.data.push(this.state.size)
-    
   }
   goTo(turnNumber) {
     
@@ -232,7 +231,19 @@ class GameInstance {
     this.tick()
     setTimeout(() => this.timer(), interval / focusedInstance.speed.value);
   }
+  toggleCell(stringCoord) {
 
+    if(this.state.has(stringCoord)){
+      this.state.delete(stringCoord)
+      this.data[this.pointer] -= 1
+    }else{
+      this.state.add(stringCoord)
+      this.data[this.pointer] += 1
+    }
+    this.changes.add(stringCoord)
+    this.drawState()
+    updateGraph(this.data)
+  }
 }
 
 
@@ -290,7 +301,7 @@ let newInstanceButton = document.createElement('button')
 newInstanceButton.innerHTML='New config'
 instanceOptionsDiv.append(newInstanceButton)
 newInstanceButton.onclick = function() {
-  console.log("Selected rule:",startingRuleSelection.options[startingRuleSelection.selectedIndex].value);
+  //console.log("Selected rule:",startingRuleSelection.options[startingRuleSelection.selectedIndex].value);
   let selectedRule = startingRuleSelection.options[startingRuleSelection.selectedIndex].value;
   let ruleObj;
   for(let rule of ruleArray){
@@ -310,7 +321,7 @@ newInstanceButton.onclick = function() {
       break;
     }
   }
-  console.log("rule object:",ruleObj)
+  //console.log("rule object:",ruleObj)
   //shut down old instance for a while
   focusedInstance.paused = true;
   let newInstance = new GameInstance(configData,ctx,ruleObj);
@@ -416,25 +427,8 @@ function clickHandler(event) {
     let gameCoords = makeStringCoord(...getGameCoords(event.layerX, event.layerY))
     //console.log("Game coords:",gameX,",",gameY)
     focusedInstance.paused = true;
-    {
-      if (GameInstance.match(gameCoords, focusedInstance.state)) {
-        console.log("before:",focusedInstance.state)
-        console.log("removing:",gameCoords)
-        focusedInstance.state.delete(gameCoords) //remove cell from list
-        focusedInstance.changes.add(gameCoords) 
-        focusedInstance.data[focusedInstance.pointer] -= 1;
-        console.log("after:",focusedInstance.state)
-        updateGraph(focusedInstance.data);
-        focusedInstance.drawState()
-      } else {
-        //console.log("adding:",gameCoords)
-        focusedInstance.state.add(gameCoords) //add cell to list
-        focusedInstance.changes.add(gameCoords)
-        focusedInstance.data[focusedInstance.pointer] += 1;
-        updateGraph(focusedInstance.data);
-        focusedInstance.drawState()
-      }
-    }
+    //console.log(`targeting ${gameCoords}`)
+    focusedInstance.toggleCell(gameCoords)
   }
   //console.log(event)
 }
@@ -486,8 +480,9 @@ function keyUpHandler(e) {
       focusedInstance.drawState();
       break;
     case "z":
-      console.log(focusedInstance.pointer,focusedInstance.history.length)
-
+      console.log("pointer, history.length",focusedInstance.pointer,focusedInstance.history.length)
+      console.log("state, typeof(state)",focusedInstance.state, typeof(focusedInstance.state))
+      console.log("changes",focusedInstance.changes)
   }
 
 }
