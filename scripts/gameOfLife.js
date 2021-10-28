@@ -354,10 +354,7 @@ let speed = 10;
 
 focusedInstance.timer()
 
-let canvasX = canvas.getBoundingClientRect().x;
-let canvasWidth = canvas.getBoundingClientRect().width;
-let canvasY = canvas.getBoundingClientRect().y;
-let canvasHeight = canvas.getBoundingClientRect().height;
+
 
 const graphWidth = 300;
 const graphHeight = 300;
@@ -406,6 +403,10 @@ function updateGraph(dataset) {
 
 
 function isOnCanvas(x, y) {
+  let canvasX = canvas.getBoundingClientRect().x + window.scrollX;
+  let canvasWidth = canvas.getBoundingClientRect().width;
+  let canvasY = canvas.getBoundingClientRect().y + window.scrollY;
+  let canvasHeight = canvas.getBoundingClientRect().height;
   if ((x > canvasX && x < canvasX + canvasWidth)
     && (y > canvasY && y < canvasY + canvasHeight)) {
     return true
@@ -414,8 +415,9 @@ function isOnCanvas(x, y) {
   }
 }
 function getGameCoords(x, y) {
-  let relX = x - canvasX;
-  let relY = y - canvasY;
+  
+  let relX = x - (canvas.getBoundingClientRect().x + window.scrollX);
+  let relY = y - (canvas.getBoundingClientRect().y + window.scrollY);
   //console.log(relX,relY)
   let gameX = Math.floor((relX - xOffset) / pixelSize);
   let gameY = Math.floor((relY - yOffset) / pixelSize);
