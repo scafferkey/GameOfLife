@@ -356,10 +356,10 @@ focusedInstance.timer()
 
 
 
-const graphWidth = 300;
+const graphWidth = 350;
 const graphHeight = 300;
 const padding = 20;
-const axisPadding = 30;
+const axisPadding = 40;
 const svg = d3.select(".graph")
   .append("svg")
   .attr("width", graphWidth)
