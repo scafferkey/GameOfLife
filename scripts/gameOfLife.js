@@ -260,6 +260,7 @@ let panStep = width / 20;
 
 //starting configurations
 let standardSoup = GameInstance.generateSoup(50, 0.6)
+
 let bHeptomino = { name: "B-heptonimo", data: GameInstance.matrixToCoords([[1, 0, 1, 1], [1, 1, 1, 0], [0, 1, 0, 0]]) };
 let diehard = { name: "diehard", data: [[0, 1], [1, 1], [1, 0], [5, 0], [6, 0], [7, 0], [6, 2],] };
 let rpent = { name: "r-pentomino", data: [[0, 1], [1, 0], [1, 1], [1, 2], [2, 2]] };
@@ -333,6 +334,8 @@ newInstanceButton.onclick = function () {
 
 let defaultInstance = new GameInstance(rpent.data, ctx, standardGameRule);
 let focusedInstance = defaultInstance;
+
+
 focusedInstance.drawState();
 
 
