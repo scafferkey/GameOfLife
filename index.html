@@ -23,7 +23,8 @@
             padding: 5%;
             background: DarkGray;
             align-items: center;
-            border-radius: 10px 
+            border-radius: 10px;
+            height:650px; 
         }
         .test{
             background: LightGrey;
@@ -31,6 +32,10 @@
             border-radius: 5px;
         }
         h3{padding: 0.5em 0.5em 0 0.1em;}
+        .minicontainer{
+            display: grid;
+            grid-template-rows: 1fr 2fr 2fr;
+            }
     </style>
 </head>
 <body>
@@ -59,17 +64,17 @@
 </div>
 
 
-<div class="inset">
-    <p>Looking at turn: <em id='pointer'>0</em> <br>
-    Furthest turn generated: <em id='turnsGenerated'>0</em>
-    </p>
+<div class="inset minicontainer" >
+    <div><p>Currently Viewing: turn <strong id='pointer'>0</strong> <br>
+    Number of turns calculated: <strong id='turnsGenerated'>0</strong>
+    </p></div>
     <div id="instancing" class="test">
         <p>New Game Options:</p>
     </div>
     <div class="graph"></div>
 </div>
 
-<div class="graph"></div>
+
 
 <script src="scripts/gameOfLife.js"></script>
 

@@ -298,7 +298,7 @@ for (let config of startArray) {
 let linebreak = document.createElement('br')
 instanceOptionsDiv.append(linebreak);
 let newInstanceButton = document.createElement('button')
-newInstanceButton.innerHTML = 'New config'
+newInstanceButton.innerHTML = 'New configuration'
 instanceOptionsDiv.append(newInstanceButton)
 newInstanceButton.onclick = function () {
   //console.log("Selected rule:",startingRuleSelection.options[startingRuleSelection.selectedIndex].value);
