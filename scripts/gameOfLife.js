@@ -358,16 +358,18 @@ focusedInstance.timer()
 
 const graphWidth = 300;
 const graphHeight = 300;
-const padding = 10;
+const padding = 20;
 const axisPadding = 30;
 const svg = d3.select(".graph")
   .append("svg")
   .attr("width", graphWidth)
   .attr("height", graphHeight)
 
-svg.append("g")
+let yRoot = svg.append("g")
   .attr("transform", "translate(" + axisPadding + ", 0)")
 
+let xRoot = svg.append("g")
+  .attr("transform", "translate(" + 0 + ", "+ (graphHeight - padding +2) +")")
 updateGraph(focusedInstance.data)
 
 function updateGraph(dataset) {
@@ -383,12 +385,13 @@ function updateGraph(dataset) {
     .range([graphHeight - padding, padding])
   let xScale = d3.scaleLinear()
     .domain([0, (dataset.length - 1) + 1]) //+1 leaves room for final bar at the end
-    .range([axisPadding + 5, graphWidth - padding])
+    .range([axisPadding +2, graphWidth - padding])
 
   let yAxis = d3.axisLeft(yAxisScale)
     .tickValues(yScale.ticks(10))
   //console.log("yScale.ticks",yScale.ticks(10)) //need to use inverse y scale to avoid problems.
-
+  let xAxis = d3.axisBottom(xScale)
+                .tickValues(xScale.ticks(10))
   svg.selectAll("rect")
     .data(dataset)
     .join("rect")
@@ -397,8 +400,8 @@ function updateGraph(dataset) {
     .attr("x", (d, i) => xScale(i))//(i*(((graphWidth/dataset.length)))))
     .attr("y", d => (graphHeight - padding - yScale(d)))
     .attr("fill", (d, i) => i == focusedInstance.pointer ? "#FFF" : "#EEE");
-  svg.select("g")
-    .call(yAxis) //Deal
+  yRoot.call(yAxis) 
+  xRoot.call(xAxis)
 }
 
 
