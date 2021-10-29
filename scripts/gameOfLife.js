@@ -7,17 +7,17 @@ window.onload = function () {
 
 
 class GameInstance {
-  constructor(seedState, screen, rule = standardGameObj) {
+  constructor(seedState, screen, rule = standardGameRule) {
     this.seed = writeCoordString(seedState);
     this.state = new Set(this.seed);
-    this.history = [this.state,]
-    this.changes = this.state;
+    this.history = [this.state,];
+    this.changes = new Set(this.seed);
     this.pointer = 0;
-    this.speed = { "value": 10, "max": 30, "min": 1 }
-    this.paused = true; 
+    this.speed = { "value": 10, "max": 30, "min": 1 };
+    this.paused = true;
     this.screen = screen;
     this.rule = rule;
-    this.data = [this.state.size,]
+    this.data = [this.state.size,];
   }
   static matrixToCoords(matrix) {
     let output = [];
@@ -55,7 +55,7 @@ class GameInstance {
     this.tick()
     setTimeout(() => this.timer(), interval / focusedInstance.speed.value);
   }
-  step(rule = this.rule) {
+  step() {
     function getEligible(list, xRange = 1, yRange = 1) {
       // list needs to be a numeric coordinate or converted into one
       let convList = readCoordString(list)
@@ -142,23 +142,17 @@ class GameInstance {
       return [newLiveList, changes];
     }
     // at this level, all variables should be string coords
-    let currentState = this.state;
-    // console.log("beginning state", currentState)
     let eligibleList = getEligible(this.changes);
-    let sleepingCells = difference(currentState, eligibleList)
-    // console.log("sleeping Cells:", sleepingCells)
-    // console.log("eligibile", eligibleList)
-    let [nextState, changes] = getNextState(eligibleList, currentState, sleepingCells, rule);
-    // console.log("updated state:", nextState, "changes", changes)
+    let sleepingList = difference(this.state, eligibleList)
+    let [nextState, changes] = getNextState(eligibleList, this.state, sleepingList, this.rule);
     this.state = nextState;
     this.changes = changes;
     this.drawState(this.state);
     this.history.push(this.state);
     this.data.push(this.state.size)
-    updateGraph(this.data)
   }
   goTo(turnNumber) {
-    
+
     if (turnNumber < this.history.length && turnNumber >= 0) {
       this.pointer = turnNumber
       this.drawState(this.history[this.pointer])
@@ -168,29 +162,33 @@ class GameInstance {
     } else {
       //alert("Illegal jump attempted! \nPointer:",point)
     }
+    updateGraph(this.data)
     updateCounters()
   }
   drawState(targetState = null) {
-    function drawCells(canvas,targetState){
+    function drawCells(canvas, targetState) {
       for (let cell of targetState) {
-  
-        canvas.beginPath();
-        canvas.rect(cell[0] * pixelSize + xOffset, cell[1] * pixelSize + yOffset, pixelSize - 1, pixelSize - 1);
-        canvas.fillStyle = "#EEEEEE";
-        canvas.fill();
-        canvas.closePath();
+        let x = cell[0] * pixelSize + xOffset
+        let y = cell[1] * pixelSize + yOffset
+        if ((x > -pixelSize && x < width) && (y > -pixelSize && y < width)) {
+          canvas.beginPath();
+          canvas.rect(x, y, pixelSize - 1, pixelSize - 1);
+          canvas.fillStyle = "#EEEEEE";
+          canvas.fill();
+          canvas.closePath();
+        }
       }
     }
-    function drawPause(canvas){
+    function drawPause(canvas) {
       canvas.beginPath();
-      canvas.rect(width/3,height/3,width/9,height/3);
-      canvas.rect((5/9)*width,height/3,width/9,height/3);
-      canvas.fillStyle = "rgba(220, 220, 220, 0.2)"
+      canvas.rect(width / 3, height / 3, width / 9, height / 3);
+      canvas.rect((5 / 9) * width, height / 3, width / 9, height / 3);
+      canvas.fillStyle = "rgba(220, 100, 100, 0.4)"
       canvas.fill();
       canvas.closePath();
 
     }
-      if (targetState == null) {
+    if (targetState == null) {
       if (this.pointer < this.history.length - 1) {
         targetState = (this.history[this.pointer]);
       } else {
@@ -200,11 +198,16 @@ class GameInstance {
     targetState = readCoordString(targetState)
     this.screen.fillStyle = "rgba(50, 50, 50, 1)";
     this.screen.fillRect(0, 0, width, height);
-    drawCells(this.screen,targetState);
-    if(this.paused) {
+    drawCells(this.screen, targetState);
+    if (this.paused) {
       drawPause(this.screen)
     }
-    if(this.history.length > 2) {updateGraph(this.data)}
+    if (this.pointer < this.history.length - 1) {
+      this.screen.lineWidth = 5;
+      this.screen.strokeStyle = "rgba(220, 100, 100, 0.6)";
+      this.screen.strokeRect(5, 5, width - 10, height - 10);
+
+    }
   }
   tick() {
 
@@ -215,6 +218,7 @@ class GameInstance {
         this.step();
       }
       this.pointer++;
+      updateGraph(this.data)
       //console.log(pointer)
       updateCounters();
     }
@@ -227,7 +231,19 @@ class GameInstance {
     this.tick()
     setTimeout(() => this.timer(), interval / focusedInstance.speed.value);
   }
+  toggleCell(stringCoord) {
 
+    if (this.state.has(stringCoord)) {
+      this.state.delete(stringCoord)
+      this.data[this.pointer] -= 1
+    } else {
+      this.state.add(stringCoord)
+      this.data[this.pointer] += 1
+    }
+    this.changes.add(stringCoord)
+    this.drawState()
+    updateGraph(this.data)
+  }
 }
 
 
@@ -244,26 +260,84 @@ let panStep = width / 20;
 
 //starting configurations
 let standardSoup = GameInstance.generateSoup(50, 0.6)
-let bPentomino = GameInstance.matrixToCoords([[1, 0, 1], [1, 0, 1], [1, 1, 1]]);
-let startState = [[0, 0], [0, 1], [1, 0], [1, 1], [0, 2]];
-let diehard = [[0, 1], [1, 1], [1, 0], [5, 0], [6, 0], [7, 0], [6, 2],];
-let rpent = [[0, 1], [1, 0], [1, 1], [1, 2], [2, 2]];
-let block = [[0, 0], [0, 1], [1, 0], [1, 1]];
-let altpent = [[0, 1], [1, 1], [1, 0], [1, 2], [2, 2]]; //reordered rpent for fun test purposes. probably delete later
-let coordTest = [[0, 0], [1, 1], [-1, -1]];
+
+let bHeptomino = { name: "B-heptonimo", data: GameInstance.matrixToCoords([[1, 0, 1, 1], [1, 1, 1, 0], [0, 1, 0, 0]]) };
+let diehard = { name: "diehard", data: [[0, 1], [1, 1], [1, 0], [5, 0], [6, 0], [7, 0], [6, 2],] };
+let rpent = { name: "r-pentomino", data: [[0, 1], [1, 0], [1, 1], [1, 2], [2, 2]] };
+let startArray = [rpent, bHeptomino, diehard]
 //rules
-let standardGameRule = { born: [3], survive: [2, 3] }
-let lifeWithoutDeathRule = { born: [3], survive: [0, 1, 2, 3, 4, 5, 6, 7, 8] }
-let seedsRule = { born: [2], survive: [] }
-let twoByTwoRule = { born: [3, 6], survive: [1, 2, 5] }
-let highLifeRule = { born: [3, 6], survive: [2, 3] }
-let mazeRule = { born: [3], survive: [1, 2, 3, 4, 5] }
-let mazectricRule = { born: [3], survive: [1, 2, 3, 4] }
-let replicatorRule = { born: [1, 3, 5, 7], survive: [1, 3, 5, 7] }
+
+let standardGameRule = { name: "Standard Game of Life", born: [3], survive: [2, 3] }
+let lifeWithoutDeathRule = { name: "Life without Death", born: [3], survive: [0, 1, 2, 3, 4, 5, 6, 7, 8] }
+let seedsRule = { name: "Seeds", born: [2], survive: [] }
+let twoByTwoRule = { name: "Two by Two", born: [3, 6], survive: [1, 2, 5] }
+let highLifeRule = { name: "High Life", born: [3, 6], survive: [2, 3] }
+let mazeRule = { name: "Maze", born: [3], survive: [1, 2, 3, 4, 5] }
+let mazectricRule = { name: "Mazectric", born: [3], survive: [1, 2, 3, 4] }
+let replicatorRule = { name: "Replicator", born: [1, 3, 5, 7], survive: [1, 3, 5, 7] }
+let ruleArray = [standardGameRule, lifeWithoutDeathRule, seedsRule, twoByTwoRule, highLifeRule, mazeRule, mazectricRule, replicatorRule]
+
+//building up selection lists
+let instanceOptionsDiv = document.getElementById('instancing');
+
+let startingRuleSelection = document.createElement('select');
+instanceOptionsDiv.append(startingRuleSelection);
+for (let rule of ruleArray) {
+  let ruleOption = document.createElement('option')
+  ruleOption.value = rule.name;
+  ruleOption.innerHTML = rule.name;
+  startingRuleSelection.append(ruleOption)
+}
+let startingConfigSelection = document.createElement('select');
+instanceOptionsDiv.append(startingConfigSelection);
+for (let config of startArray) {
+  let configOption = document.createElement('option')
+  configOption.value = config.name;
+  configOption.innerHTML = config.name;
+  startingConfigSelection.append(configOption)
+}
+let linebreak = document.createElement('br')
+instanceOptionsDiv.append(linebreak);
+let newInstanceButton = document.createElement('button')
+newInstanceButton.innerHTML = 'New configuration'
+instanceOptionsDiv.append(newInstanceButton)
+newInstanceButton.onclick = function () {
+  //console.log("Selected rule:",startingRuleSelection.options[startingRuleSelection.selectedIndex].value);
+  let selectedRule = startingRuleSelection.options[startingRuleSelection.selectedIndex].value;
+  let ruleObj;
+  for (let rule of ruleArray) {
+    //console.log(`Testing! is ${rule.name} equal to ${selectedRule}? Answer: ${rule.name == selectedRule}`)
+    if (rule.name == selectedRule) {
+
+      ruleObj = rule;
+      break;
+    }
+  }
+  //console.log("Selected configuration:",startingConfigSelection.options[startingConfigSelection.selectedIndex].value);
+  let selectedConfig = startingConfigSelection.options[startingConfigSelection.selectedIndex].value;
+  let configData;
+  for (let configObj of startArray) {
+    if (configObj.name == selectedConfig) {
+      configData = configObj.data;
+      break;
+    }
+  }
+  //console.log("rule object:",ruleObj)
+  //shut down old instance for a while
+  focusedInstance.paused = true;
+  let newInstance = new GameInstance(configData, ctx, ruleObj);
+  focusedInstance = newInstance;
+  focusedInstance.drawState()
+  focusedInstance.timer()
+  updateGraph(focusedInstance.data)
+}
+
+let defaultInstance = new GameInstance(rpent.data, ctx, standardGameRule);
+let focusedInstance = defaultInstance;
 
 
-let focusedInstance = new GameInstance(rpent, ctx, standardGameRule);
 focusedInstance.drawState();
+
 
 const turnsGenerated = document.getElementById('turnsGenerated')
 const turnCounter = document.getElementById('pointer')
@@ -283,57 +357,62 @@ let speed = 10;
 
 focusedInstance.timer()
 
-let canvasX = canvas.getBoundingClientRect().x;
-let canvasWidth = canvas.getBoundingClientRect().width;
-let canvasY = canvas.getBoundingClientRect().y;
-let canvasHeight = canvas.getBoundingClientRect().height;
 
-const graphWidth = 400;
-const graphHeight = 400;
-const padding = 10;
-const axisPadding = 30;
+
+const graphWidth = 350;
+const graphHeight = 300;
+const padding = 20;
+const axisPadding = 40;
 const svg = d3.select(".graph")
-    .append("svg")
-    .attr("width",graphWidth)
-    .attr("height",graphHeight)
-    
-svg.append("g")
-    .attr("transform","translate("+ axisPadding +", 0)")
+  .append("svg")
+  .attr("width", graphWidth)
+  .attr("height", graphHeight)
 
-function updateGraph(dataset){
+let yRoot = svg.append("g")
+  .attr("transform", "translate(" + axisPadding + ", 0)")
+
+let xRoot = svg.append("g")
+  .attr("transform", "translate(" + 0 + ", "+ (graphHeight - padding +2) +")")
+updateGraph(focusedInstance.data)
+
+function updateGraph(dataset) {
   // console.log("updateGraph being fired!")
   // console.log("dataset:",dataset)
-//let dataset = focusedInstance.data  //[1,2,3,4,5,8,9,10,30,25,12]
-let max = d3.max(dataset)
-let yScale = d3.scaleLinear()
-               .domain([0,d3.max(dataset)])
-               .range([padding,graphHeight - padding])
-let yAxisScale = d3.scaleLinear()
-                  .domain([0,d3.max(dataset)])
-                  .range([graphHeight - padding,padding])
-let xScale = d3.scaleLinear()
-                .domain([1,dataset.length])
-                .range([axisPadding + padding,graphWidth -padding])
+  //let dataset = focusedInstance.data  //[1,2,3,4,5,8,9,10,30,25,12]
+  let max = d3.max(dataset)
+  let yScale = d3.scaleLinear()
+    .domain([0, d3.max(dataset)])
+    .range([0, graphHeight - 2 * padding])
+  let yAxisScale = d3.scaleLinear()
+    .domain([0, d3.max(dataset)])
+    .range([graphHeight - padding, padding])
+  let xScale = d3.scaleLinear()
+    .domain([0, (dataset.length - 1) + 1]) //+1 leaves room for final bar at the end
+    .range([axisPadding +2, graphWidth - padding])
 
-let yAxis = d3.axisLeft(yAxisScale)
-              .offset(1)
-              .tickValues(yScale.ticks(10))
-              console.log("yScale.ticks",yScale.ticks(10)) //need to use inverse y scale to avoid problems.
-              
- svg.selectAll("rect")
+  let yAxis = d3.axisLeft(yAxisScale)
+    .tickValues(yScale.ticks(10))
+  //console.log("yScale.ticks",yScale.ticks(10)) //need to use inverse y scale to avoid problems.
+  let xAxis = d3.axisBottom(xScale)
+                .tickValues(xScale.ticks(10))
+  svg.selectAll("rect")
     .data(dataset)
     .join("rect")
-    .attr("width",((graphWidth-axisPadding)/dataset.length) +1)
+    .attr("width", (xScale(1) - xScale(0)) + 1)//(((graphWidth-(axisPadding+2*padding))/dataset.length) +1))
     .attr("height", d => yScale(d))
-    .attr("x", (d, i) =>xScale(i))//(i*(((graphWidth/dataset.length)))))
-    .attr("y", d => (graphHeight - yScale(d)))
-    .attr("fill",(d,i)=>i == focusedInstance.pointer+1 ? "#AAA":"#EEE") ;
- svg.select("g")
-    .call(yAxis) //Deal
+    .attr("x", (d, i) => xScale(i))//(i*(((graphWidth/dataset.length)))))
+    .attr("y", d => (graphHeight - padding - yScale(d)))
+    .attr("fill", (d, i) => i == focusedInstance.pointer ? "#FFF" : "#EEE");
+  yRoot.call(yAxis) 
+  xRoot.call(xAxis)
 }
 
 
-function isOnScreen(x, y) {
+function isOnCanvas(x, y) {
+  let canvasX = canvas.getBoundingClientRect().x + window.scrollX;
+  let canvasWidth = canvas.getBoundingClientRect().width;
+  let canvasY = canvas.getBoundingClientRect().y + window.scrollY;
+  let canvasHeight = canvas.getBoundingClientRect().height;
   if ((x > canvasX && x < canvasX + canvasWidth)
     && (y > canvasY && y < canvasY + canvasHeight)) {
     return true
@@ -342,8 +421,9 @@ function isOnScreen(x, y) {
   }
 }
 function getGameCoords(x, y) {
-  let relX = x - canvasX;
-  let relY = y - canvasY;
+  
+  let relX = x - (canvas.getBoundingClientRect().x + window.scrollX);
+  let relY = y - (canvas.getBoundingClientRect().y + window.scrollY);
   //console.log(relX,relY)
   let gameX = Math.floor((relX - xOffset) / pixelSize);
   let gameY = Math.floor((relY - yOffset) / pixelSize);
@@ -351,24 +431,12 @@ function getGameCoords(x, y) {
 }
 
 function clickHandler(event) {
-  if (isOnScreen(event.layerX, event.layerY) && focusedInstance.pointer == focusedInstance.history.length - 1) {
+  if (isOnCanvas(event.layerX, event.layerY) && focusedInstance.pointer == focusedInstance.history.length - 1) {
     let gameCoords = makeStringCoord(...getGameCoords(event.layerX, event.layerY))
     //console.log("Game coords:",gameX,",",gameY)
     focusedInstance.paused = true;
-    let index = GameInstance.match(gameCoords, focusedInstance.state);
-    {
-      if (index) {
-        //console.log("removing:",gameCoords)
-        focusedInstance.state.delete(gameCoords) //remove cell from list
-        focusedInstance.changes.delete(gameCoords)
-        focusedInstance.drawState()
-      } else {
-        //console.log("adding:",gameCoords)
-        focusedInstance.state.add(gameCoords) //add cell to list
-        focusedInstance.changes.add(gameCoords)
-        focusedInstance.drawState()
-      }
-    }
+    //console.log(`targeting ${gameCoords}`)
+    focusedInstance.toggleCell(gameCoords)
   }
   //console.log(event)
 }
@@ -419,7 +487,10 @@ function keyUpHandler(e) {
       pixelSize += 1;
       focusedInstance.drawState();
       break;
-
+    case "z":
+      /* console.log("pointer, history.length", focusedInstance.pointer, focusedInstance.history.length)
+      console.log("state, typeof(state)", focusedInstance.state, typeof (focusedInstance.state))
+      console.log("changes", focusedInstance.changes) */
   }
 
 }

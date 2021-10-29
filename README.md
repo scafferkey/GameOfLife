@@ -13,7 +13,7 @@ TODO:
     - reverse speed?
     - Skip to beginning/last generated state
     - Fix counters so they update.
-- Important - Bundle functionality into a class!!
+- Important - Bundle functionality into a class!! (Done!)
     - Move update functions into class and make them reference the object (DONE!)
     - Move the timer and alert functions into object 
 - General controls:
@@ -32,12 +32,15 @@ Optimisation:
     - Replace list with a map (or set might be better?) (Done!)
     - Track sleeping cells, etc.(Done!)
         - Clicked in cells must be added to awake list! (done!)
+    - Only draw cells onscreen (Done!)
 - Data visualisation:
-    - Tracking numbers of "alive" cells
+    - Tracking numbers of "alive" cells (Done!)
     - Implement temperature and density
     - Analysis of cell configurations/game rulesets for "interesting" results
     - Map onto the game state?
 
+- Graph
+    - Fix large labels being cut off (adjust sizing?)
 - Discovery:
     - Soup generation (Done!)
     - Identifying unique shapes/configurations
@@ -50,6 +53,7 @@ Optimisation:
 - A prettier Webpage! (In progress!)
 BUGS:
 - Clicking gets translated by a bunch very often, need to fix coord system for it
-
+- Graph axes can be floating point (fix formatting)
+- Graph won't log cells added by clicking!
 Really far off:
 Alternate tiling systems (Hexagonal, triangular)
